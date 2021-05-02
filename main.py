@@ -85,7 +85,7 @@ class datasetUI(QDialog):
         ML = MLModels.regression()
         
         score = ML.multipleLinearRegression(self.path)
-        self.scores.setText(score)
+        self.scores.setPlainText(score)
         print(score)
 
 

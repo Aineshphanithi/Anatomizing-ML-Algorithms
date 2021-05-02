@@ -83,11 +83,14 @@ background-color: rgb(167, 168, 167); </string>
   <widget class="QTextEdit" name="scores">
    <property name="geometry">
     <rect>
-     <x>140</x>
-     <y>310</y>
-     <width>104</width>
-     <height>71</height>
+     <x>10</x>
+     <y>250</y>
+     <width>421</width>
+     <height>291</height>
     </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">color: rgb(255, 255, 255);</string>
    </property>
   </widget>
  </widget>
