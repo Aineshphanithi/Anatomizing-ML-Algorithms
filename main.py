@@ -1,7 +1,8 @@
 import sys
 from PyQt5 import QtWidgets
-from PyQt5.QtWidgets import QDialog, QApplication, QFileDialog
+from PyQt5.QtWidgets import QDialog, QApplication, QFileDialog, QWidget
 from PyQt5.uic import loadUi
+import MLModels
 
 class Login(QDialog):
     def __init__(self):
@@ -11,7 +12,6 @@ class Login(QDialog):
         self.password.setEchoMode(QtWidgets.QLineEdit.Password) #To hide the entered password
         self.createaccbutton.clicked.connect(self.gotocreate)
         
-
     def loginfunction(self):
         email = self.email.text()
         password = self.password.text()
@@ -46,27 +46,47 @@ class CreateAcc(QDialog):
             widget.setCurrentIndex(widget.currentIndex()+1)
 
 class selectModel(QDialog):
+    # def __init__(self):
+    #      super(selectModel,self).__init__()
+    #      loadUi("selectModel.ui",self)
+    #      self.regressionbutton.clicked.connect(self.regressionfunction)
+
+    # def regressionfunction(self):
+    #     b = regressionUI()
+    #     widget.addWidget(b)
+    #     widget.setCurrentIndex(widget.currentIndex()+1)
+
     def __init__(self):
          super(selectModel,self).__init__()
          loadUi("selectModel.ui",self)
-         self.regressionbutton.clicked.connect(self.regressionfunction)
+         self.regressionbutton.clicked.connect(self.callClass)
 
-    def regressionfunction(self):
-        regUI = regressionUI()
-        widget.addWidget(regUI)
+    def callClass(self):
+        dataUI = datasetUI()
+        widget.addWidget(dataUI)
         widget.setCurrentIndex(widget.currentIndex()+1)
+    
 
-class regressionUI(QDialog):
+class datasetUI(QDialog):
+    path=""
     def __init__(self):
-        super(regressionUI,self).__init__()
-        loadUi("browse.ui",self)
-        self.browse.clicked.connect(self.browsefiles)
+        super(datasetUI,self).__init__()
+        loadUi("browse.ui",self)        
+        self.browsebutton.clicked.connect(self.browsefiles)
 
-    def browsefiles(self):
+    def browsefiles(self,ML):
         fname = QFileDialog.getOpenFileName(self, 'Open File','C:','csv(*csv)')
         print(fname)
+        self.path= fname[0]
         self.filename.setText(fname[0])
-
+        self.predictButton.clicked.connect(self.getScores)
+    
+    def getScores(self):
+        ML = MLModels.regression()
+        
+        score = ML.multipleLinearRegression(self.path)
+        self.scores.setText(score)
+        print(score)
 
 
 app = QApplication(sys.argv)

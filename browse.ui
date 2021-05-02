@@ -29,7 +29,7 @@
     <string notr="true">color: rgb(255, 255, 255);</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="browse">
+  <widget class="QPushButton" name="browsebutton">
    <property name="geometry">
     <rect>
      <x>260</x>
@@ -63,7 +63,7 @@ font-size:14pt;</string>
     <string>Upload your CSV File</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="pushButton">
+  <widget class="QPushButton" name="predictButton">
    <property name="geometry">
     <rect>
      <x>130</x>
@@ -80,9 +80,17 @@ background-color: rgb(167, 168, 167); </string>
     <string>Predict</string>
    </property>
   </widget>
+  <widget class="QTextEdit" name="scores">
+   <property name="geometry">
+    <rect>
+     <x>140</x>
+     <y>310</y>
+     <width>104</width>
+     <height>71</height>
+    </rect>
+   </property>
+  </widget>
  </widget>
- <resources>
-  <include location="C:/Users/aines/Downloads/back_button.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>
