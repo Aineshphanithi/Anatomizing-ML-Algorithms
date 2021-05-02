@@ -2,8 +2,13 @@ import sys
 from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import QDialog, QApplication, QFileDialog, QWidget
 from PyQt5.uic import loadUi
+from PyQt5.QtWidgets import QApplication, QWidget, QLabel
+from PyQt5.QtGui import QIcon, QPixmap
 import MLModels
+# import threading
 
+
+selectedModel = 0
 class Login(QDialog):
     def __init__(self):
         super(Login, self).__init__()
@@ -57,9 +62,44 @@ class selectModel(QDialog):
     #     widget.setCurrentIndex(widget.currentIndex()+1)
 
     def __init__(self):
-         super(selectModel,self).__init__()
-         loadUi("selectModel.ui",self)
-         self.regressionbutton.clicked.connect(self.callClass)
+        super(selectModel,self).__init__()
+        loadUi("selectModel.ui",self)
+        self.regressionbutton.clicked.connect(self.regression)
+        
+    def regression(self):
+        print("regression")
+        selectedModel=0
+        self.callClass()
+
+    def classification(self):
+        print("classification")
+        selectedModel=1
+        self.callClass()
+
+    def clustering(self):
+        print("clustering")
+        selectedModel=2
+        self.callClass()
+
+    def associationRuleLearning(self):
+        print("associationRuleLearning")
+        selectedModel=3
+        self.callClass()
+
+    def reinforcementLearning(self):
+        print("reinforcementLearnin")
+        selectedModel=4
+        self.callClass()
+    
+    def naturalLanguageProcessing(self):
+        print("reinforcementLearnin")
+        selectedModel=5
+        self.callClass()
+
+    def deepLearning(self):
+        print("deepLearning")
+        selectedModel=6
+        self.callClass()
 
     def callClass(self):
         dataUI = datasetUI()
@@ -82,10 +122,15 @@ class datasetUI(QDialog):
         self.predictButton.clicked.connect(self.getScores)
     
     def getScores(self):
-        ML = MLModels.regression()
+        classML = [MLModels.regression(),MLModels.classification(),MLModels.clustering(),MLModels.associationRuleLearning(),MLModels.reinforcementLearning(),MLModels.naturalLanguageProcessing(),MLModels.deepLearning()]
+        print(classML)
+        ML = classML[selectedModel]
         
         score = ML.multipleLinearRegression(self.path)
-        self.scores.setPlainText(score)
+        label = QLabel(self)
+        pixmap = QPixmap('regression.jpg')
+        label.setPixmap(pixmap)
+        self.scores.setText(score)
         print(score)
 
 

@@ -21,7 +21,7 @@
     <rect>
      <x>30</x>
      <y>110</y>
-     <width>171</width>
+     <width>321</width>
      <height>31</height>
     </rect>
    </property>
@@ -32,7 +32,7 @@
   <widget class="QPushButton" name="browsebutton">
    <property name="geometry">
     <rect>
-     <x>260</x>
+     <x>360</x>
      <y>110</y>
      <width>93</width>
      <height>28</height>
@@ -66,8 +66,8 @@ font-size:14pt;</string>
   <widget class="QPushButton" name="predictButton">
    <property name="geometry">
     <rect>
-     <x>130</x>
-     <y>180</y>
+     <x>170</x>
+     <y>190</y>
      <width>131</width>
      <height>31</height>
     </rect>
@@ -83,17 +83,22 @@ background-color: rgb(167, 168, 167); </string>
   <widget class="QTextEdit" name="scores">
    <property name="geometry">
     <rect>
-     <x>10</x>
-     <y>250</y>
-     <width>421</width>
-     <height>291</height>
+     <x>150</x>
+     <y>280</y>
+     <width>191</width>
+     <height>271</height>
     </rect>
+   </property>
+   <property name="autoFillBackground">
+    <bool>true</bool>
    </property>
    <property name="styleSheet">
     <string notr="true">color: rgb(255, 255, 255);</string>
    </property>
   </widget>
  </widget>
- <resources/>
+ <resources>
+  <include location="MLModelImageTest.qrc"/>
+ </resources>
  <connections/>
 </ui>
