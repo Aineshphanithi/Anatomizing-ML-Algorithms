@@ -152,6 +152,18 @@ class regression:
         #accScore = accuracy_score(y_test, y_pred)
         np.set_printoptions(precision=2)
         print(np.concatenate((y_pred.reshape(len(y_pred),1), y_test.reshape(len(y_test),1)),1))
+        #graph of pred vs test
+        
+        plt.plot(y_test)
+        plt.plot(y_pred)
+        plt.legend(["y_test","y_pred"])
+        plt.title('predicted vs actual result')
+        plt.xlabel("Years of Experience")
+        plt.ylabel('Salary')
+        plt.savefig('regression.jpg',bbox_inches = 'tight', dpi = 150 )
+
+        plt.show()
+
         
         return str(np.concatenate((y_pred.reshape(len(y_pred),1), y_test.reshape(len(y_test),1)),1))
 
@@ -428,7 +440,7 @@ class regression:
         #Under Construction
         print("hello")
 
-class Classification:
+class classification:
     def __init__(self):
         
         import numpy as np
