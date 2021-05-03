@@ -5,7 +5,7 @@ from PyQt5.uic import loadUi
 from PyQt5.QtWidgets import QApplication, QWidget, QLabel
 from PyQt5.QtGui import QIcon, QPixmap
 import MLModels
-# import threading
+import threading
 
 
 selectedModel = 0
@@ -122,16 +122,35 @@ class datasetUI(QDialog):
         self.predictButton.clicked.connect(self.getScores)
     
     def getScores(self):
+        rmse=[]
         classML = [MLModels.regression(),MLModels.classification(),MLModels.clustering(),MLModels.associationRuleLearning(),MLModels.reinforcementLearning(),MLModels.naturalLanguageProcessing(),MLModels.deepLearning()]
         print(classML)
         ML = classML[selectedModel]
+        modules = [[ML.multipleLinearRegression(self.path),ML.polynomialRegression(self.path),ML.supportVectorRegression(self.path),ML.decisionTreeRegression(self.path),ML.randomForestRegression(self.path),ML.xgBoostR(self.path),ML.catBoostR(self.path)]]
+        #for func in modules[selectedModel]:
+        for func in modules[0]:
+            score = func
+            print(score[1])
+            rmse.append(score[1].real)
+        rmseText = [str(x) for x in rmse]
+        self.scores.setText(" ".join(rmseText))
         
-        score = ML.multipleLinearRegression(self.path)
-        label = QLabel(self)
-        pixmap = QPixmap('regression.jpg')
-        label.setPixmap(pixmap)
-        self.scores.setText(score)
-        print(score)
+        
+        import matplotlib.pyplot as plt; plt.rcdefaults()
+        import numpy as np
+        import matplotlib.pyplot as plt
+
+        objects = ('multipleLinearRegression','polynomialRegression','supportVectorRegression','decisionTreeRegression','randomForestRegression','xgBoostR','catBoostR')
+        y_pos = np.arange(len(objects))
+        performance = rmse
+
+        plt.bar(y_pos, performance, align='center', alpha=0.5)
+        plt.xticks(y_pos, objects)
+        plt.ylabel('RMSE')
+        plt.title('Regression Models RMSE value')
+
+        plt.show()
+        print(rmse)
 
 
 app = QApplication(sys.argv)

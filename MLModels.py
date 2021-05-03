@@ -101,7 +101,8 @@ class regression:
     #
     #     # Predicting the Test set results
     #     y_pred = regressor.predict(X_test)
-        
+    
+
     def multipleLinearRegression(self,dir):
         import numpy as np
         import matplotlib.pyplot as plt
@@ -110,8 +111,7 @@ class regression:
         dataset = pd.read_csv(dir)
         X = dataset.iloc[:, :-1].values
         y = dataset.iloc[:, -1].values
-        print(X)
-        print(y)
+        
         # Encoding categorical data
         stridx = []
         for x in range(0, len(X[0])):
@@ -127,15 +127,13 @@ class regression:
             ct = ColumnTransformer(transformers=[('encoder', OneHotEncoder(), [i])], remainder='passthrough')
             X = np.array(ct.fit_transform(X))
             print(X)
-        print(y)
+        
         from sklearn.preprocessing import LabelEncoder
         if isinstance(y[0], str):
             # removing the string from dependent variable
             le = LabelEncoder()
             y = le.fit_transform(y)
-        print(y)
-
-            
+        
         # Splitting the dataset into the Training set and Test set
         from sklearn.model_selection import train_test_split
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2, random_state = 0)
@@ -154,21 +152,28 @@ class regression:
         print(np.concatenate((y_pred.reshape(len(y_pred),1), y_test.reshape(len(y_test),1)),1))
         #graph of pred vs test
         
-        plt.plot(y_test)
-        plt.plot(y_pred)
-        plt.legend(["y_test","y_pred"])
-        plt.title('predicted vs actual result')
-        plt.xlabel("Years of Experience")
-        plt.ylabel('Salary')
-        plt.savefig('regression.jpg',bbox_inches = 'tight', dpi = 150 )
+        # plt.plot(y_test)
+        # plt.plot(y_pred)
+        # plt.legend(["y_test","y_pred"])
+        # plt.title('predicted vs actual result')
+        # plt.xlabel("Years of Experience")
+        # plt.ylabel('Salary')
+        # plt.savefig('regression.jpg',bbox_inches = 'tight', dpi = 150 )
 
-        plt.show()
+        # plt.show()
+        # print(y_test,y_pred)
 
-        
-        return str(np.concatenate((y_pred.reshape(len(y_pred),1), y_test.reshape(len(y_test),1)),1))
+        from sklearn.metrics import mean_squared_error
+        import cmath
+        mse = mean_squared_error(y_test, y_pred)
+        rmse = cmath.sqrt(mse)
+        print("multiple Linear Regression")
+        return [str(np.concatenate((y_pred.reshape(len(y_pred),1), y_test.reshape(len(y_test),1)),1)),rmse]
 
     def polynomialRegression(self,dir):
-    
+        import numpy as np
+        import matplotlib.pyplot as plt
+        import pandas as pd
         # Importing the dataset
         dataset = pd.read_csv(dir)
         X = dataset.iloc[:, :-1].values
@@ -197,18 +202,50 @@ class regression:
             y = le.fit_transform(y)
         print(y)
         
+        # Splitting the dataset into the Training set and Test set
+        from sklearn.model_selection import train_test_split
+        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2, random_state = 0)
+        
+
         # Training the Polynomial Regression model on the whole dataset
         from sklearn.preprocessing import PolynomialFeatures
         poly_reg = PolynomialFeatures(degree = 4)
-        X_poly = poly_reg.fit_transform(X)
+        X_poly = poly_reg.fit_transform(X_train)
+        from sklearn.linear_model import LinearRegression
         lin_reg_2 = LinearRegression()
-        lin_reg_2.fit(X_poly, y)
+        lin_reg_2.fit(X_poly, y_train)
         
         # Predicting a new result with Polynomial Regression
-        lin_reg_2.predict(poly_reg.fit_transform([[6.5]]))
+        y_pred = lin_reg_2.predict(poly_reg.fit_transform(X_test))
+
+
+        np.set_printoptions(precision=2)
+        print(np.concatenate((y_pred.reshape(len(y_pred),1), y_test.reshape(len(y_test),1)),1))
+        #graph of pred vs test
+        
+        # plt.plot(y_test)
+        # plt.plot(y_pred)
+        # plt.legend(["y_test","y_pred"])
+        # plt.title('predicted vs actual result')
+        # plt.xlabel("Years of Experience")
+        # plt.ylabel('Salary')
+        # plt.savefig('regression.jpg',bbox_inches = 'tight', dpi = 150 )
+
+        # plt.show()
+        # print(y_test,y_pred)
+
+        from sklearn.metrics import mean_squared_error
+        import cmath
+        mse = mean_squared_error(y_test, y_pred)
+        rmse = cmath.sqrt(mse)
+        print("polynomial Regression")
+        return [str(np.concatenate((y_pred.reshape(len(y_pred),1), y_test.reshape(len(y_test),1)),1)),rmse]
+
         
     def supportVectorRegression(self,dir):
-        
+        import numpy as np
+        import matplotlib.pyplot as plt
+        import pandas as pd
         # Importing the dataset
         dataset = pd.read_csv(dir)
         X = dataset.iloc[:, :-1].values
@@ -240,6 +277,10 @@ class regression:
             y = le.fit_transform(y)
         print(y)
         
+        
+        # Splitting the dataset into the Training set and Test set
+        
+
         # Feature Scaling
         from sklearn.preprocessing import StandardScaler
         sc_X = StandardScaler()
@@ -249,16 +290,45 @@ class regression:
         print(X)
         print(y)
         
+        from sklearn.model_selection import train_test_split
+        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2, random_state = 0)
+        
         # Training the SVR model on the whole dataset
         from sklearn.svm import SVR
         regressor = SVR(kernel = 'rbf')
-        regressor.fit(X, y)
-        
+        regressor.fit(X_train, y_train)
+        print("support vector Regression")
         # Predicting a new result
-        sc_y.inverse_transform(regressor.predict(sc_X.transform([[6.5]])))
+        #sc_y.inverse_transform(regressor.predict(sc_X.transform([[6.5]])))
+        # Predicting a new result with Polynomial Regression
+        y_pred = sc_y.inverse_transform(regressor.predict(X_test))
+        np.set_printoptions(precision=2)
+        print(np.concatenate((y_pred.reshape(len(y_pred),1), y_test.reshape(len(y_test),1)),1))
+        #graph of pred vs test
         
+        # plt.plot(y_test)
+        # plt.plot(y_pred)
+        # plt.legend(["y_test","y_pred"])
+        # plt.title('predicted vs actual result')
+        # plt.xlabel("Years of Experience")
+        # plt.ylabel('Salary')
+        # plt.savefig('regression.jpg',bbox_inches = 'tight', dpi = 150 )
+
+        plt.show()
+        print(y_test,y_pred)
+
+        from sklearn.metrics import mean_squared_error
+        import cmath
+        mse = mean_squared_error(y_test, y_pred)
+        rmse = cmath.sqrt(mse)
+        print("polynomial Regression")
+        return [str(np.concatenate((y_pred.reshape(len(y_pred),1), y_test.reshape(len(y_test),1)),1)),rmse]
+
+
     def decisionTreeRegression(self,dir):
-        
+        import numpy as np
+        import matplotlib.pyplot as plt
+        import pandas as pd
         # Importing the dataset
         dataset = pd.read_csv(dir)
         X = dataset.iloc[:, :-1].values
@@ -287,17 +357,50 @@ class regression:
             le = LabelEncoder()
             y = le.fit_transform(y)
         print(y)
+        
+        # Splitting the dataset into the Training set and Test set
+        from sklearn.model_selection import train_test_split
+        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2, random_state = 0)
         
         # Training the Decision Tree Regression model on the whole dataset
         from sklearn.tree import DecisionTreeRegressor
         regressor = DecisionTreeRegressor(random_state = 0)
-        regressor.fit(X, y)
-        
+        regressor.fit(X_train, y_train)
+        print("descision tree Regression")
         # Predicting a new result
-        regressor.predict([[6.5]])
+        #regressor.predict([[6.5]])
+
+        # Predicting a new result with Polynomial Regression
+        y_pred = regressor.predict(X_test)
+
+
+        np.set_printoptions(precision=2)
+        print(np.concatenate((y_pred.reshape(len(y_pred),1), y_test.reshape(len(y_test),1)),1))
+        #graph of pred vs test
+        
+        # plt.plot(y_test)
+        # plt.plot(y_pred)
+        # plt.legend(["y_test","y_pred"])
+        # plt.title('predicted vs actual result')
+        # plt.xlabel("Years of Experience")
+        # plt.ylabel('Salary')
+        # plt.savefig('regression.jpg',bbox_inches = 'tight', dpi = 150 )
+
+        # plt.show()
+        # print(y_test,y_pred)
+
+        from sklearn.metrics import mean_squared_error
+        import cmath
+        mse = mean_squared_error(y_test, y_pred)
+        rmse = cmath.sqrt(mse)
+        print("polynomial Regression")
+        return [str(np.concatenate((y_pred.reshape(len(y_pred),1), y_test.reshape(len(y_test),1)),1)),rmse]
+
         
     def randomForestRegression(self,dir):
-        
+        import numpy as np
+        import matplotlib.pyplot as plt
+        import pandas as pd
         # Importing the dataset
         dataset = pd.read_csv(dir)
         X = dataset.iloc[:, :-1].values
@@ -326,35 +429,69 @@ class regression:
             le = LabelEncoder()
             y = le.fit_transform(y)
         print(y)
+        # Splitting the dataset into the Training set and Test set
+        from sklearn.model_selection import train_test_split
+        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2, random_state = 0)
         
+
         # Training the Random Forest Regression model on the whole dataset
         from sklearn.ensemble import RandomForestRegressor
         regressor = RandomForestRegressor(n_estimators = 10, random_state = 0)
-        regressor.fit(X, y)
-        
+        regressor.fit(X_train, y_train)
+        print("random forest Regression")
         # Predicting a new result
-        regressor.predict([[6.5]])
+        #regressor.predict([[6.5]])
+
+        # Predicting a new result with Polynomial Regression
+        y_pred = regressor.predict(X_test)
+
+
+        np.set_printoptions(precision=2)
+        print(np.concatenate((y_pred.reshape(len(y_pred),1), y_test.reshape(len(y_test),1)),1))
+        #graph of pred vs test
+        
+        # plt.plot(y_test)
+        # plt.plot(y_pred)
+        # plt.legend(["y_test","y_pred"])
+        # plt.title('predicted vs actual result')
+        # plt.xlabel("Years of Experience")
+        # plt.ylabel('Salary')
+        # plt.savefig('regression.jpg',bbox_inches = 'tight', dpi = 150 )
+
+        # plt.show()
+        # print(y_test,y_pred)
+
+        from sklearn.metrics import mean_squared_error
+        import cmath
+        mse = mean_squared_error(y_test, y_pred)
+        rmse = cmath.sqrt(mse)
+        print("polynomial Regression")
+        return [str(np.concatenate((y_pred.reshape(len(y_pred),1), y_test.reshape(len(y_test),1)),1)),rmse]
+
+
 
     def xgBoostR(self,dir):
-        
+        import numpy as np
+        import matplotlib.pyplot as plt
+        import pandas as pd
         #https://www.geeksforgeeks.org/xgboost-for-regression/
         # Necessary imports
         import xgboost as xg
         from sklearn.model_selection import train_test_split
         from sklearn.metrics import mean_squared_error as MSE
-          
-        # Load the data
+        
+        print("Load the data")
         dataset = pd.read_csv(dir)
-        X, y = dataset.iloc[:, :-1], dataset.iloc[:, -1]
+        X, y = dataset.iloc[:, :-1].values, dataset.iloc[:, -1].values
           
-         # Encoding categorical data
+        print("Encoding categorical data")
         stridx = []
         for x in range(0, len(X[0])):
             if isinstance(X[0][x], str):
                 stridx.append(x)
         
         
-        # removing the string from independent variable
+        print("removing the string from independent variable")
         from sklearn.compose import ColumnTransformer
         from sklearn.preprocessing import OneHotEncoder
         
@@ -366,16 +503,16 @@ class regression:
         
         from sklearn.preprocessing import LabelEncoder
         if isinstance(y[0], str):
-            # removing the string from dependent variable
+            print("removing the string from dependent variable")
             le = LabelEncoder()
             y = le.fit_transform(y)
         print(y)
-        
-        # Splitting
-        train_X, test_X, train_y, test_y = train_test_split(X, y,
-                              test_size = 0.3, random_state = 123)
+
+
+        print("Splitting")
+        train_X, test_X, train_y, y_test = train_test_split(X, y,test_size = 0.3, random_state = 123)
           
-        # Instantiation
+        print("Instantiation")
         xgb_r = xg.XGBRegressor(objective ='reg:linear',
                           n_estimators = 10, seed = 123)
           
@@ -383,14 +520,40 @@ class regression:
         xgb_r.fit(train_X, train_y)
           
         # Predict the model
-        pred = xgb_r.predict(test_X)
-          
+        y_pred = xgb_r.predict(test_X)
+        print("xgboost Regression")
         # RMSE Computation
-        rmse = np.sqrt(MSE(test_y, pred))
+        rmse = np.sqrt(MSE(y_test, y_pred))
         print("RMSE : % f" %(rmse))
+
+        np.set_printoptions(precision=2)
+        print(np.concatenate((y_pred.reshape(len(y_pred),1), y_test.reshape(len(y_test),1)),1))
+        #graph of pred vs test
         
+        # plt.plot(y_test)
+        # plt.plot(y_pred)
+        # plt.legend(["y_test","y_pred"])
+        # plt.title('predicted vs actual result')
+        # plt.xlabel("Years of Experience")
+        # plt.ylabel('Salary')
+        # plt.savefig('regression.jpg',bbox_inches = 'tight', dpi = 150 )
+
+        # plt.show()
+        # print(y_test,y_pred)
+
+        from sklearn.metrics import mean_squared_error
+        import cmath
+        mse = mean_squared_error(y_test, y_pred)
+        rmse = cmath.sqrt(mse)
+        print("polynomial Regression")
+        return [str(np.concatenate((y_pred.reshape(len(y_pred),1), y_test.reshape(len(y_test),1)),1)),rmse]
+
+
+
     def catBoostR(self,dir):
-        
+        import numpy as np
+        import matplotlib.pyplot as plt
+        import pandas as pd
         #https://catboost.ai/docs/concepts/python-usages-examples.html
         from catboost import CatBoostRegressor
         
@@ -422,9 +585,8 @@ class regression:
             le = LabelEncoder()
             y = le.fit_transform(y)
         print(y)
-        
-        train_X, test_X, train_y, test_y = train_test_split(X, y,
-                              test_size = 0.3, random_state = 123)
+        from sklearn.model_selection import train_test_split
+        train_X, test_X, train_y, y_test = train_test_split(X, y,test_size = 0.3, random_state = 123)
         
         # Initialize CatBoostRegressor
         model = CatBoostRegressor(iterations=2,
@@ -432,10 +594,33 @@ class regression:
                                   depth=2)
         # Fit model
         model.fit(train_X, train_y)
-        
+        print("cat boost Regression")
         # Get predictions
-        preds = model.predict(test_X)
-    
+        y_pred = model.predict(test_X)
+
+        np.set_printoptions(precision=2)
+        print(np.concatenate((y_pred.reshape(len(y_pred),1), y_test.reshape(len(y_test),1)),1))
+        #graph of pred vs test
+        
+        # plt.plot(y_test)
+        # plt.plot(y_pred)
+        # plt.legend(["y_test","y_pred"])
+        # plt.title('predicted vs actual result')
+        # plt.xlabel("Years of Experience")
+        # plt.ylabel('Salary')
+        # plt.savefig('regression.jpg',bbox_inches = 'tight', dpi = 150 )
+
+        # plt.show()
+        # print(y_test,y_pred)
+
+        from sklearn.metrics import mean_squared_error
+        import cmath
+        mse = mean_squared_error(y_test, y_pred)
+        rmse = cmath.sqrt(mse)
+        print("polynomial Regression")
+        return [str(np.concatenate((y_pred.reshape(len(y_pred),1), y_test.reshape(len(y_test),1)),1)),rmse]
+
+
     def graphs(self):
         #Under Construction
         print("hello")
