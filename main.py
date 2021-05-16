@@ -7,8 +7,8 @@ from PyQt5.QtGui import QIcon, QPixmap
 import MLModels
 import threading
 
+selectmodel=0
 
-selectedModel = 0
 class Login(QDialog):
     def __init__(self):
         super(Login, self).__init__()
@@ -60,45 +60,58 @@ class selectModel(QDialog):
     #     b = regressionUI()
     #     widget.addWidget(b)
     #     widget.setCurrentIndex(widget.currentIndex()+1)
-
+    
     def __init__(self):
         super(selectModel,self).__init__()
         loadUi("selectModel.ui",self)
         self.regressionbutton.clicked.connect(self.regression)
+        self.classificationbutton.clicked.connect(self.classification)
+        self.clusteringbutton.clicked.connect(self.clustering)
+        self.reinforcementlearningbutton.clicked.connect(self.associationRuleLearning)
+        self.associationrulelearningbutton.clicked.connect(self.reinforcementLearning)
+        self.deeplearningbutton.clicked.connect(self.deepLearning)
+        
         
     def regression(self):
         print("regression")
-        selectedModel=0
+        selectModel=0
+        print("selectedModel",selectModel)
         self.callClass()
 
     def classification(self):
         print("classification")
-        selectedModel=1
+        selectModel=1
+        print("selectedModel",selectModel)
         self.callClass()
 
     def clustering(self):
         print("clustering")
-        selectedModel=2
+        selectModel=2
+        print("selectedModel",selectModel)
         self.callClass()
 
     def associationRuleLearning(self):
         print("associationRuleLearning")
-        selectedModel=3
+        selectModel=3
+        print("selectedModel",selectModel)
         self.callClass()
 
     def reinforcementLearning(self):
         print("reinforcementLearnin")
-        selectedModel=4
+        selectModel=4
+        print("selectedModel",selectModel)
         self.callClass()
     
     def naturalLanguageProcessing(self):
         print("reinforcementLearnin")
-        selectedModel=5
+        selectModel=5
+        print("selectedModel",selectModel)
         self.callClass()
 
     def deepLearning(self):
         print("deepLearning")
-        selectedModel=6
+        selectModel=6
+        print("selectedModel",selectModel)
         self.callClass()
 
     def callClass(self):
@@ -109,48 +122,134 @@ class selectModel(QDialog):
 
 class datasetUI(QDialog):
     path=""
+    
     def __init__(self):
         super(datasetUI,self).__init__()
         loadUi("browse.ui",self)        
         self.browsebutton.clicked.connect(self.browsefiles)
 
     def browsefiles(self,ML):
-        fname = QFileDialog.getOpenFileName(self, 'Open File','C:','csv(*csv)')
+        fname = QFileDialog.getOpenFileName(self, 'Open File','E:\Machine Learning\Machine Learning A-Z (Codes and Datasets)')
         print(fname)
-        self.path= fname[0]
+        self.path = fname[0]
         self.filename.setText(fname[0])
         self.predictButton.clicked.connect(self.getScores)
     
     def getScores(self):
-        rmse=[]
+        currModel = selectmodel
+        print("Current Model:",currModel)
+        scores=[]
         classML = [MLModels.regression(),MLModels.classification(),MLModels.clustering(),MLModels.associationRuleLearning(),MLModels.reinforcementLearning(),MLModels.naturalLanguageProcessing(),MLModels.deepLearning()]
         print(classML)
-        ML = classML[selectedModel]
-        modules = [[ML.multipleLinearRegression(self.path),ML.polynomialRegression(self.path),ML.supportVectorRegression(self.path),ML.decisionTreeRegression(self.path),ML.randomForestRegression(self.path),ML.xgBoostR(self.path),ML.catBoostR(self.path)]]
+        ML = classML[currModel]
+        if(currModel==0):
+            modules = [ML.multipleLinearRegression(self.path),ML.polynomialRegression(self.path),ML.supportVectorRegression(self.path),ML.decisionTreeRegression(self.path),ML.randomForestRegression(self.path),ML.xgBoostR(self.path),ML.catBoostR(self.path)]
+        elif(currModel == 1):
+            modules = [ML.logisticRegression(self.path),ML.kNearestNeighbors(self.path),ML.supportVectorMachine(self.path),ML.kernelSupportVectorMachine(self.path),ML.naiveBayes(self.path),ML.decisionTreeClassification(self.path),ML.randomForestClassification(self.path),ML.xgBoostC(self.path),ML.catBoostC(self.path)]
+        elif(currModel == 2):
+            modules = [ML.k_MeansClustering(self.path),ML.hierarchicalClustering(self.path)]
+        elif(currModel == 3):
+            modules = [ML.apriori(self.path),ML.eclat(self.path)]
+        elif(currModel == 4):
+            modules = [ML.upperConfidenceBound(self.path),ML.thompsonSampling(self.path)]
+        elif(currModel == 5):
+            modules = [ML.bagOfWordsNB(self.path),ML.bagOfWordsLR(self.path),ML.bagOfWordsKNN(self.path),ML.bagOfWordsSVM(self.path),ML.bagOfWordsKSVM(self.path),ML.bagOfWordsDTC(self.path),ML.bagOfWordsRFC(self.path),ML.bagOfWordsXGB(self.path)]
+        elif(currModel == 6):
+            modules = [ML.k_MeansClustering(self.path),ML.hierarchicalClustering(self.path)]
+        else:
+            print("error: Selected Model Doesn't exist")
         #for func in modules[selectedModel]:
-        for func in modules[0]:
-            score = func
-            print(score[1])
-            rmse.append(score[1].real)
-        rmseText = [str(x) for x in rmse]
-        self.scores.setText(" ".join(rmseText))
-        
-        
+        print(modules,currModel)
+        for func in modules:
+            if(currModel == 0):
+                score = func
+                print(score[1])
+                scores.append(score[1].real)
+                scoresstr = [str(x) for x in scores]
+                self.scores.setText(" ".join(scoresstr))
+
+            elif(currModel == 1):
+                score = func
+                print(score)
+                scores.append(score)
+                scoresstr = [str(x) for x in scores]
+                self.scores.setText(" ".join(scoresstr))
+
+            elif(currModel == 2):
+                score = func
+                print(score)
+                scores.append(max(score))
+                scoresstr = [str(x) for x in scores]
+                self.scores.setText(" ".join(scoresstr))
+
+            elif(currModel == 3):
+                score = func
+                print(score)
+                scores.append(score)
+                scorestr = [str(x) for x in scores]
+                self.scores.setText('\n'.join(scorestr))
+            
+            elif(currModel == 4):
+                score = func
+                print(score)
+                scores.append(score)
+                scorestr = [str(x) for x in scores]
+                self.scores.setText('\n'.join(scorestr))
+
+            elif(currModel == 5):
+                score = func
+                print(score)
+                scores.append(score)
+                scoresstr = [str(x) for x in scores]
+                self.scores.setText(" ".join(scoresstr))
+
         import matplotlib.pyplot as plt; plt.rcdefaults()
         import numpy as np
         import matplotlib.pyplot as plt
-
-        objects = ('multipleLinearRegression','polynomialRegression','supportVectorRegression','decisionTreeRegression','randomForestRegression','xgBoostR','catBoostR')
-        y_pos = np.arange(len(objects))
-        performance = rmse
-
-        plt.bar(y_pos, performance, align='center', alpha=0.5)
-        plt.xticks(y_pos, objects)
-        plt.ylabel('RMSE')
-        plt.title('Regression Models RMSE value')
+        print("selectedModel",currModel)
+        if(currModel==0):
+            objects = ('multipleLinearRegression','polynomialRegression','supportVectorRegression','decisionTreeRegression','randomForestRegression','xgBoostR','catBoostR')
+            y_pos = np.arange(len(objects))
+            performance = scores
+            plt.bar(y_pos, performance, align='center', alpha=0.5)
+            plt.xticks(y_pos, objects)
+            plt.ylabel('RMSE')
+            plt.title('Regression Models RMSE value')
+        elif(currModel == 1):
+            objects = ('LogisticRegression','KNearestNeighbors','SupportVectorMachine','KernelSupportVectorMachine','NaiveBayes','DecisionTreeClassification','RandomForestClassification','xgBoostC','CatBoostC')
+            y_pos = np.arange(len(objects))
+            performance = scores
+            plt.bar(y_pos, performance, align='center', alpha=0.5)
+            plt.xticks(y_pos, objects)
+            plt.ylabel('Accuracy Score')
+            plt.title('Classification Models Accuracy Scores')
+        elif(currModel == 2):
+            objects = ('K_Means Clustering','Hierarchical Clustering')
+            y_pos = np.arange(len(objects))
+            performance = scores
+            plt.bar(y_pos, performance, align='center', alpha=0.5)
+            plt.xticks(y_pos, objects)
+            plt.ylabel('v-Score')
+            plt.title('Clustering Models  v_Scores')
+        elif(currModel == 4):
+            # objects = ('K_Means Clustering','Hierarchical Clustering')
+            # y_pos = np.arange(len(objects))
+            # performance = scores
+            # plt.bar(y_pos, performance, align='center', alpha=0.5)
+            # plt.xticks(y_pos, objects)
+            # plt.ylabel('v-Score')
+            plt.title('Reinforcement Learning Model')
+        elif(currModel == 5):
+            objects = ('bagOfWordsNB','bagOfWordsLR','bagOfWordsKNN','bagOfWordsSVM','bagOfWordsKSVM','bagOfWordsDTC','bagOfWordsRFC','bagOfWordsXGB')
+            y_pos = np.arange(len(objects))
+            performance = scores
+            plt.bar(y_pos, performance, align='center', alpha=0.5)
+            plt.xticks(y_pos, objects)
+            plt.ylabel('Accuracy')
+            plt.title('Natural Language Processing Using Classification')
 
         plt.show()
-        print(rmse)
+        print(scores)
 
 
 app = QApplication(sys.argv)
