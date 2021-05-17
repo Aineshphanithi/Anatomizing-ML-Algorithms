@@ -69,6 +69,7 @@ class selectModel(QDialog):
         self.clusteringbutton.clicked.connect(self.clustering)
         self.reinforcementlearningbutton.clicked.connect(self.associationRuleLearning)
         self.associationrulelearningbutton.clicked.connect(self.reinforcementLearning)
+        self.naturallanguageprocessingbutton.clicked.connect(self.naturalLanguageProcessing)
         self.deeplearningbutton.clicked.connect(self.deepLearning)
         
         
@@ -97,28 +98,56 @@ class selectModel(QDialog):
         self.callClass()
 
     def reinforcementLearning(self):
-        print("reinforcementLearnin")
+        print("reinforcementLearning")
         selectModel=4
         print("selectedModel",selectModel)
         self.callClass()
     
     def naturalLanguageProcessing(self):
-        print("reinforcementLearnin")
+        print("Natural Language Processing")
         selectModel=5
         print("selectedModel",selectModel)
         self.callClass()
 
     def deepLearning(self):
-        print("deepLearning")
+        print("Deep Learning")
         selectModel=6
         print("selectedModel",selectModel)
-        self.callClass()
+        self.callDL()
+    
+    def callDL(self):
+        dl = deepLearningUI()
+        widget.addWidget(dl)
+        widget.setCurrentIndex(widget.currentIndex()+1)
 
     def callClass(self):
         dataUI = datasetUI()
         widget.addWidget(dataUI)
         widget.setCurrentIndex(widget.currentIndex()+1)
     
+class deepLearningUI(QDialog):
+    def __init__(self):
+        super(deepLearningUI,self).__init__()
+        loadUi("deepLearning.ui",self)        
+        self.annbutton.clicked.connect(self.browsefiles1)
+        self.cnnbutton.clicked.connect(self.browsefiles2)
+    
+    def browsefiles1(self):
+        print("Deep Learning ANN")
+        selectModel=6
+        print("selectedModel",selectModel)
+        self.callClass()
+
+    def browsefiles2(self):
+        print("Deep Learning CNN")
+        selectModel=7
+        print("selectedModel",selectModel)
+        self.callClass()
+    
+    def callClass(self):
+        dataUI = datasetUI()
+        widget.addWidget(dataUI)
+        widget.setCurrentIndex(widget.currentIndex()+1)
 
 class datasetUI(QDialog):
     path=""
