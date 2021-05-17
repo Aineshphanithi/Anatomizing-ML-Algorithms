@@ -132,6 +132,12 @@ class deepLearningUI(QDialog):
         loadUi("deepLearning.ui",self)        
         self.annbutton.clicked.connect(self.browsefiles1)
         self.cnnbutton.clicked.connect(self.browsefiles2)
+        self.back.clicked.connect(self.goback)
+    
+    def goback(self):
+        selModScreen = selectModel()
+        widget.addWidget(selModScreen)
+        widget.setCurrentIndex(widget.currentIndex()+1)  
     
     def browsefiles1(self):
         print("Deep Learning ANN")
@@ -160,6 +166,12 @@ class datasetUI(QDialog):
         self.currModel = selectmodel
         loadUi("browse.ui",self)        
         self.browsebutton.clicked.connect(self.browsefiles)
+        self.back.clicked.connect(self.goback)
+
+    def goback(self):
+        selModScreen = selectModel()
+        widget.addWidget(selModScreen)
+        widget.setCurrentIndex(widget.currentIndex()+1)         
 
     def browsefiles(self,ML):
         if(self.currModel==7):
@@ -294,8 +306,13 @@ class datasetUI(QDialog):
         print(scores)
 
 
+
+        
+
+
+
 app = QApplication(sys.argv)
-mainWindow = Login()
+mainWindow = selectModel()
 widget = QtWidgets.QStackedWidget()
 widget.addWidget(mainWindow)
 widget.setFixedWidth(480)

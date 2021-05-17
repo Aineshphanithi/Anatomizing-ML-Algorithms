@@ -2,4 +2,7 @@
   <qresource prefix="newPrefix">
     <file>regression.jpg</file>
   </qresource>
+  <qresource prefix="Img">
+    <file>C:/Users/aines/Downloads/back button.png</file>
+  </qresource>
 </RCC>
