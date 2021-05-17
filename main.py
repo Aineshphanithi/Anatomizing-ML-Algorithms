@@ -131,6 +131,12 @@ class deepLearningUI(QDialog):
         loadUi("deepLearning.ui",self)        
         self.annbutton.clicked.connect(self.browsefiles1)
         self.cnnbutton.clicked.connect(self.browsefiles2)
+        self.back.clicked.connect(self.goback)
+    
+    def goback(self):
+        selModScreen = selectModel()
+        widget.addWidget(selModScreen)
+        widget.setCurrentIndex(widget.currentIndex()+1)  
     
     def browsefiles1(self):
         print("Deep Learning ANN")
@@ -156,6 +162,12 @@ class datasetUI(QDialog):
         super(datasetUI,self).__init__()
         loadUi("browse.ui",self)        
         self.browsebutton.clicked.connect(self.browsefiles)
+        self.back.clicked.connect(self.goback)
+
+    def goback(self):
+        selModScreen = selectModel()
+        widget.addWidget(selModScreen)
+        widget.setCurrentIndex(widget.currentIndex()+1)         
 
     def browsefiles(self,ML):
         fname = QFileDialog.getOpenFileName(self, 'Open File','E:\Machine Learning\Machine Learning A-Z (Codes and Datasets)')
@@ -279,6 +291,11 @@ class datasetUI(QDialog):
 
         plt.show()
         print(scores)
+
+
+
+        
+
 
 
 app = QApplication(sys.argv)

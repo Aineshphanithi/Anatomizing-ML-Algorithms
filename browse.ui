@@ -333,6 +333,57 @@ QPushButton:pressed {
 </string>
    </property>
   </widget>
+  <widget class="QPushButton" name="back">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>81</width>
+     <height>41</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QPushButton {
+    color: #333;
+    border: 2px solid #555;
+	font: 22pt &quot;MS Shell Dlg 2&quot;;
+    border-radius: 20px;
+    border-style: outset;
+    background: qradialgradient(
+        cx: 0.3, cy: -0.4, fx: 0.3, fy: -0.4,
+        radius: 2.5, stop: 0 #ff6347, stop: 1 #0000ff
+        );
+    padding: 5px;
+	font-family: &quot;Times New Roman&quot;, Times, serif;
+	font-weight: bold;
+	font-size: 14px;
+	p.color:#8effff;
+    }
+
+QPushButton:hover {
+    background: qradialgradient(
+        cx: 0.3, cy: -0.4, fx: 0.3, fy: -0.4,
+        radius: 1.35, stop: 0 #5100ff, stop: 1#ff0018
+        );
+	color:#8effff;
+
+    }
+QPushButton:hover h4{
+	color:#8effff;;
+}
+
+QPushButton:pressed {
+    border-style: inset;
+    background: qradialgradient(
+        cx: 0.3, cy: -0.4, fx: 0.3, fy: -0.4,
+        radius: 2.5, stop: 0 #5100ff, stop: 1#ff0018
+        );
+    }</string>
+   </property>
+   <property name="text">
+    <string>Back</string>
+   </property>
+  </widget>
  </widget>
  <resources>
   <include location="MLModelImageTest.qrc"/>
