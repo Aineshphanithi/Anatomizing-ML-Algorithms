@@ -7,7 +7,7 @@ from PyQt5.QtGui import QIcon, QPixmap
 import MLModels
 import threading
 
-selectmodel=0
+#selectmodel=0
 
 class Login(QDialog):
     def __init__(self):
@@ -51,6 +51,7 @@ class CreateAcc(QDialog):
             widget.setCurrentIndex(widget.currentIndex()+1)
 
 class selectModel(QDialog):
+    selectModel=0
     # def __init__(self):
     #      super(selectModel,self).__init__()
     #      loadUi("selectModel.ui",self)
@@ -77,37 +78,37 @@ class selectModel(QDialog):
         print("regression")
         selectModel=0
         print("selectedModel",selectModel)
-        self.callClass()
+        self.callClass(selectModel)
 
     def classification(self):
         print("classification")
         selectModel=1
         print("selectedModel",selectModel)
-        self.callClass()
+        self.callClass(selectModel)
 
     def clustering(self):
         print("clustering")
         selectModel=2
         print("selectedModel",selectModel)
-        self.callClass()
+        self.callClass(selectModel)
 
     def associationRuleLearning(self):
         print("associationRuleLearning")
         selectModel=3
         print("selectedModel",selectModel)
-        self.callClass()
+        self.callClass(selectModel)
 
     def reinforcementLearning(self):
         print("reinforcementLearning")
         selectModel=4
         print("selectedModel",selectModel)
-        self.callClass()
+        self.callClass(selectModel)
     
     def naturalLanguageProcessing(self):
         print("Natural Language Processing")
         selectModel=5
         print("selectedModel",selectModel)
-        self.callClass()
+        self.callClass(selectModel)
 
     def deepLearning(self):
         print("Deep Learning")
@@ -120,8 +121,8 @@ class selectModel(QDialog):
         widget.addWidget(dl)
         widget.setCurrentIndex(widget.currentIndex()+1)
 
-    def callClass(self):
-        dataUI = datasetUI()
+    def callClass(self,selectmodel):
+        dataUI = datasetUI(selectmodel)
         widget.addWidget(dataUI)
         widget.setCurrentIndex(widget.currentIndex()+1)
     
@@ -136,39 +137,49 @@ class deepLearningUI(QDialog):
         print("Deep Learning ANN")
         selectModel=6
         print("selectedModel",selectModel)
-        self.callClass()
+        self.callClass(selectModel)
 
     def browsefiles2(self):
         print("Deep Learning CNN")
         selectModel=7
         print("selectedModel",selectModel)
-        self.callClass()
+        self.callClass(selectModel)
     
-    def callClass(self):
-        dataUI = datasetUI()
+    def callClass(self,test):
+        dataUI = datasetUI(test)
         widget.addWidget(dataUI)
         widget.setCurrentIndex(widget.currentIndex()+1)
 
 class datasetUI(QDialog):
     path=""
-    
-    def __init__(self):
+    currModel = 0
+    def __init__(self,selectmodel):
+        
         super(datasetUI,self).__init__()
+        print("In constructor ",selectmodel)
+        self.currModel = selectmodel
         loadUi("browse.ui",self)        
         self.browsebutton.clicked.connect(self.browsefiles)
 
     def browsefiles(self,ML):
-        fname = QFileDialog.getOpenFileName(self, 'Open File','E:\Machine Learning\Machine Learning A-Z (Codes and Datasets)')
+        if(self.currModel==7):
+            fname = QFileDialog.getExistingDirectory(self,'Open Directory','E:\Machine Learning\Machine Learning A-Z (Codes and Datasets)')
+            self.path = fname
+            self.filename.setText(fname)
+        
+        else:
+            fname = QFileDialog.getOpenFileName(self, 'Open File','E:\Machine Learning\Machine Learning A-Z (Codes and Datasets)')
+            self.path = fname[0]
+            self.filename.setText(fname[0])
+        
         print(fname)
-        self.path = fname[0]
-        self.filename.setText(fname[0])
         self.predictButton.clicked.connect(self.getScores)
     
     def getScores(self):
-        currModel = selectmodel
+        currModel = self.currModel
         print("Current Model:",currModel)
         scores=[]
-        classML = [MLModels.regression(),MLModels.classification(),MLModels.clustering(),MLModels.associationRuleLearning(),MLModels.reinforcementLearning(),MLModels.naturalLanguageProcessing(),MLModels.deepLearning()]
+        classML = [MLModels.regression(),MLModels.classification(),MLModels.clustering(),MLModels.associationRuleLearning(),MLModels.reinforcementLearning(),MLModels.naturalLanguageProcessing(),MLModels.deepLearning(),MLModels.deepLearning()]
         print(classML)
         ML = classML[currModel]
         if(currModel==0):
@@ -184,7 +195,9 @@ class datasetUI(QDialog):
         elif(currModel == 5):
             modules = [ML.bagOfWordsNB(self.path),ML.bagOfWordsLR(self.path),ML.bagOfWordsKNN(self.path),ML.bagOfWordsSVM(self.path),ML.bagOfWordsKSVM(self.path),ML.bagOfWordsDTC(self.path),ML.bagOfWordsRFC(self.path),ML.bagOfWordsXGB(self.path)]
         elif(currModel == 6):
-            modules = [ML.k_MeansClustering(self.path),ML.hierarchicalClustering(self.path)]
+            modules = [ML.artificialNeuralNetwork(self.path)]
+        elif(currModel == 7):
+            modules = [ML.convolutionalNeuralNetwork(self.path)]
         else:
             print("error: Selected Model Doesn't exist")
         #for func in modules[selectedModel]:
