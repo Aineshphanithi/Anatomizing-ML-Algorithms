@@ -149,7 +149,7 @@ class regression:
         y_pred = regressor.predict(X_test)
         #accScore = accuracy_score(y_test, y_pred)
         np.set_printoptions(precision=2)
-        print(np.concatenate((y_pred.reshape(len(y_pred),1), y_test.reshape(len(y_test),1)),1))
+        #print(np.concatenate((y_pred.reshape(len(y_pred),1), y_test.reshape(len(y_test),1)),1))
         #graph of pred vs test
         
         # plt.plot(y_test)
@@ -193,14 +193,14 @@ class regression:
         for i in stridx:
             ct = ColumnTransformer(transformers=[('encoder', OneHotEncoder(), [i])], remainder='passthrough')
             X = np.array(ct.fit_transform(X))
-            print(X)
-        print(y)
+            #print(X)
+        #print(y)
         from sklearn.preprocessing import LabelEncoder
         if isinstance(y[0], str):
             # removing the string from dependent variable
             le = LabelEncoder()
             y = le.fit_transform(y)
-        print(y)
+        #print(y)
         
         # Splitting the dataset into the Training set and Test set
         from sklearn.model_selection import train_test_split
@@ -220,7 +220,7 @@ class regression:
 
 
         np.set_printoptions(precision=2)
-        print(np.concatenate((y_pred.reshape(len(y_pred),1), y_test.reshape(len(y_test),1)),1))
+        #print(np.concatenate((y_pred.reshape(len(y_pred),1), y_test.reshape(len(y_test),1)),1))
         #graph of pred vs test
         
         # plt.plot(y_test)
@@ -250,10 +250,10 @@ class regression:
         dataset = pd.read_csv(dir)
         X = dataset.iloc[:, :-1].values
         y = dataset.iloc[:, -1].values
-        print(X)
-        print(y)
+        #print(X)
+        #print(y)
         y = y.reshape(len(y),1)
-        print(y)
+        #print(y)
          # Encoding categorical data
         stridx = []
         for x in range(0, len(X[0])):
@@ -268,27 +268,23 @@ class regression:
         for i in stridx:
             ct = ColumnTransformer(transformers=[('encoder', OneHotEncoder(), [i])], remainder='passthrough')
             X = np.array(ct.fit_transform(X))
-            print(X)
-        print(y)
+            #print(X)
+        #print(y)
         from sklearn.preprocessing import LabelEncoder
         if isinstance(y[0], str):
             # removing the string from dependent variable
             le = LabelEncoder()
             y = le.fit_transform(y)
-        print(y)
-        
-        
+        #print(y)
         # Splitting the dataset into the Training set and Test set
-        
-
         # Feature Scaling
         from sklearn.preprocessing import StandardScaler
         sc_X = StandardScaler()
         sc_y = StandardScaler()
         X = sc_X.fit_transform(X)
         y = sc_y.fit_transform(y)
-        print(X)
-        print(y)
+        #print(X)
+        #print(y)
         
         from sklearn.model_selection import train_test_split
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2, random_state = 0)
@@ -303,7 +299,7 @@ class regression:
         # Predicting a new result with Polynomial Regression
         y_pred = sc_y.inverse_transform(regressor.predict(X_test))
         np.set_printoptions(precision=2)
-        print(np.concatenate((y_pred.reshape(len(y_pred),1), y_test.reshape(len(y_test),1)),1))
+        #print(np.concatenate((y_pred.reshape(len(y_pred),1), y_test.reshape(len(y_test),1)),1))
         #graph of pred vs test
         
         # plt.plot(y_test)
@@ -315,7 +311,7 @@ class regression:
         # plt.savefig('regression.jpg',bbox_inches = 'tight', dpi = 150 )
 
         plt.show()
-        print(y_test,y_pred)
+        #print(y_test,y_pred)
 
         from sklearn.metrics import mean_squared_error
         import cmath
@@ -348,15 +344,15 @@ class regression:
         for i in stridx:
             ct = ColumnTransformer(transformers=[('encoder', OneHotEncoder(), [i])], remainder='passthrough')
             X = np.array(ct.fit_transform(X))
-            print(X)
-        print(y)
+            #print(X)
+        #print(y)
         
         from sklearn.preprocessing import LabelEncoder
         if isinstance(y[0], str):
             # removing the string from dependent variable
             le = LabelEncoder()
             y = le.fit_transform(y)
-        print(y)
+        #print(y)
         
         # Splitting the dataset into the Training set and Test set
         from sklearn.model_selection import train_test_split
@@ -375,7 +371,7 @@ class regression:
 
 
         np.set_printoptions(precision=2)
-        print(np.concatenate((y_pred.reshape(len(y_pred),1), y_test.reshape(len(y_test),1)),1))
+        #print(np.concatenate((y_pred.reshape(len(y_pred),1), y_test.reshape(len(y_test),1)),1))
         #graph of pred vs test
         
         # plt.plot(y_test)
@@ -393,7 +389,7 @@ class regression:
         import cmath
         mse = mean_squared_error(y_test, y_pred)
         rmse = cmath.sqrt(mse)
-        print("polynomial Regression")
+        #print("polynomial Regression")
         return [str(np.concatenate((y_pred.reshape(len(y_pred),1), y_test.reshape(len(y_test),1)),1)),rmse]
 
         
@@ -420,15 +416,15 @@ class regression:
         for i in stridx:
             ct = ColumnTransformer(transformers=[('encoder', OneHotEncoder(), [i])], remainder='passthrough')
             X = np.array(ct.fit_transform(X))
-            print(X)
-        print(y)
+            #print(X)
+        #print(y)
         
         from sklearn.preprocessing import LabelEncoder
         if isinstance(y[0], str):
             # removing the string from dependent variable
             le = LabelEncoder()
             y = le.fit_transform(y)
-        print(y)
+        #print(y)
         # Splitting the dataset into the Training set and Test set
         from sklearn.model_selection import train_test_split
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2, random_state = 0)
@@ -447,7 +443,7 @@ class regression:
 
 
         np.set_printoptions(precision=2)
-        print(np.concatenate((y_pred.reshape(len(y_pred),1), y_test.reshape(len(y_test),1)),1))
+        #print(np.concatenate((y_pred.reshape(len(y_pred),1), y_test.reshape(len(y_test),1)),1))
         #graph of pred vs test
         
         # plt.plot(y_test)
@@ -465,7 +461,7 @@ class regression:
         import cmath
         mse = mean_squared_error(y_test, y_pred)
         rmse = cmath.sqrt(mse)
-        print("polynomial Regression")
+        #print("polynomial Regression")
         return [str(np.concatenate((y_pred.reshape(len(y_pred),1), y_test.reshape(len(y_test),1)),1)),rmse]
 
 
@@ -480,39 +476,39 @@ class regression:
         from sklearn.model_selection import train_test_split
         from sklearn.metrics import mean_squared_error as MSE
         
-        print("Load the data")
+        #print("Load the data")
         dataset = pd.read_csv(dir)
         X, y = dataset.iloc[:, :-1].values, dataset.iloc[:, -1].values
           
-        print("Encoding categorical data")
+        #print("Encoding categorical data")
         stridx = []
         for x in range(0, len(X[0])):
             if isinstance(X[0][x], str):
                 stridx.append(x)
         
         
-        print("removing the string from independent variable")
+       # print("removing the string from independent variable")
         from sklearn.compose import ColumnTransformer
         from sklearn.preprocessing import OneHotEncoder
         
         for i in stridx:
             ct = ColumnTransformer(transformers=[('encoder', OneHotEncoder(), [i])], remainder='passthrough')
             X = np.array(ct.fit_transform(X))
-            print(X)
-        print(y)
+            #print(X)
+        #print(y)
         
         from sklearn.preprocessing import LabelEncoder
         if isinstance(y[0], str):
-            print("removing the string from dependent variable")
+            #print("removing the string from dependent variable")
             le = LabelEncoder()
             y = le.fit_transform(y)
-        print(y)
+        #print(y)
 
-
-        print("Splitting")
+        print("XGBoost")
+       # print("Splitting")
         train_X, test_X, train_y, y_test = train_test_split(X, y,test_size = 0.3, random_state = 123)
           
-        print("Instantiation")
+        #print("Instantiation")
         xgb_r = xg.XGBRegressor(objective ='reg:linear',
                           n_estimators = 10, seed = 123)
           
@@ -521,13 +517,13 @@ class regression:
           
         # Predict the model
         y_pred = xgb_r.predict(test_X)
-        print("xgboost Regression")
+        #print("xgboost Regression")
         # RMSE Computation
         rmse = np.sqrt(MSE(y_test, y_pred))
-        print("RMSE : % f" %(rmse))
+        #print("RMSE : % f" %(rmse))
 
         np.set_printoptions(precision=2)
-        print(np.concatenate((y_pred.reshape(len(y_pred),1), y_test.reshape(len(y_test),1)),1))
+        #print(np.concatenate((y_pred.reshape(len(y_pred),1), y_test.reshape(len(y_test),1)),1))
         #graph of pred vs test
         
         # plt.plot(y_test)
@@ -545,7 +541,7 @@ class regression:
         import cmath
         mse = mean_squared_error(y_test, y_pred)
         rmse = cmath.sqrt(mse)
-        print("polynomial Regression")
+        #print("polynomial Regression")
         return [str(np.concatenate((y_pred.reshape(len(y_pred),1), y_test.reshape(len(y_test),1)),1)),rmse]
 
 
@@ -561,7 +557,7 @@ class regression:
         dataset = pd.read_csv(dir)
         X = dataset.iloc[:, :-1].values
         y = dataset.iloc[:, -1].values
-        print(X[0],y[0])
+        #print(X[0],y[0])
         # Encoding categorical data
         stridx = []
         for x in range(0, len(X[0])):
@@ -575,7 +571,7 @@ class regression:
         for i in stridx:
             ct = ColumnTransformer(transformers=[('encoder', OneHotEncoder(), [i])], remainder='passthrough')
             X = np.array(ct.fit_transform(X))
-            print(X)
+            #print(X)
         
         
         from sklearn.preprocessing import LabelEncoder
@@ -584,7 +580,7 @@ class regression:
             # removing the string from dependent variable
             le = LabelEncoder()
             y = le.fit_transform(y)
-        print(y)
+        #print(y)
         from sklearn.model_selection import train_test_split
         train_X, test_X, train_y, y_test = train_test_split(X, y,test_size = 0.3, random_state = 123)
         
@@ -599,7 +595,7 @@ class regression:
         y_pred = model.predict(test_X)
 
         np.set_printoptions(precision=2)
-        print(np.concatenate((y_pred.reshape(len(y_pred),1), y_test.reshape(len(y_test),1)),1))
+        #print(np.concatenate((y_pred.reshape(len(y_pred),1), y_test.reshape(len(y_test),1)),1))
         #graph of pred vs test
         
         # plt.plot(y_test)
@@ -617,7 +613,7 @@ class regression:
         import cmath
         mse = mean_squared_error(y_test, y_pred)
         rmse = cmath.sqrt(mse)
-        print("polynomial Regression")
+        #print("polynomial Regression")
         return [str(np.concatenate((y_pred.reshape(len(y_pred),1), y_test.reshape(len(y_test),1)),1)),rmse]
 
 
@@ -633,7 +629,9 @@ class classification:
         import pandas as pd
         
     def logisticRegression(self,dir):
-        
+        import numpy as np
+        import matplotlib.pyplot as plt
+        import pandas as pd
         # Importing the dataset
         dataset = pd.read_csv(dir)
         X = dataset.iloc[:, :-1].values
@@ -692,10 +690,14 @@ class classification:
         from sklearn.metrics import confusion_matrix, accuracy_score
         cm = confusion_matrix(y_test, y_pred)
         print(cm)
-        accuracy_score(y_test, y_pred)
-        
+        score = accuracy_score(y_test, y_pred)
+        return score
+
+
     def kNearestNeighbors(self,dir):
-        
+        import numpy as np
+        import matplotlib.pyplot as plt
+        import pandas as pd
         # Importing the dataset
         dataset = pd.read_csv(dir)
         X = dataset.iloc[:, :-1].values
@@ -755,11 +757,15 @@ class classification:
         from sklearn.metrics import confusion_matrix, accuracy_score
         cm = confusion_matrix(y_test, y_pred)
         print(cm)
-        accuracy_score(y_test, y_pred)
+        score=accuracy_score(y_test, y_pred)
+        return score
 
     def supportVectorMachine(self,dir):
                 
         # Importing the dataset
+        import numpy as np
+        import matplotlib.pyplot as plt
+        import pandas as pd
         dataset = pd.read_csv(dir)
         X = dataset.iloc[:, :-1].values
         y = dataset.iloc[:, -1].values
@@ -817,11 +823,16 @@ class classification:
         from sklearn.metrics import confusion_matrix, accuracy_score
         cm = confusion_matrix(y_test, y_pred)
         print(cm)
-        accuracy_score(y_test, y_pred)
+        score = accuracy_score(y_test, y_pred)
+        return score
+
 
     def kernelSupportVectorMachine(self,dir):
                 
         # Importing the dataset
+        import numpy as np
+        import matplotlib.pyplot as plt
+        import pandas as pd
         dataset = pd.read_csv(dir)
         X = dataset.iloc[:, :-1].values
         y = dataset.iloc[:, -1].values
@@ -880,11 +891,15 @@ class classification:
         from sklearn.metrics import confusion_matrix, accuracy_score
         cm = confusion_matrix(y_test, y_pred)
         print(cm)
-        accuracy_score(y_test, y_pred)
+        score = accuracy_score(y_test, y_pred)
+        return score
 
     def naiveBayes(self,dir):
  
         # Importing the dataset
+        import numpy as np
+        import matplotlib.pyplot as plt
+        import pandas as pd
         dataset = pd.read_csv(dir)
         X = dataset.iloc[:, :-1].values
         y = dataset.iloc[:, -1].values
@@ -943,11 +958,16 @@ class classification:
         from sklearn.metrics import confusion_matrix, accuracy_score
         cm = confusion_matrix(y_test, y_pred)
         print(cm)
-        accuracy_score(y_test, y_pred)
-    
+        score = accuracy_score(y_test, y_pred)
+        return score
+
+
     def decisionTreeClassification(self,dir):
         
         # Importing the dataset
+        import numpy as np
+        import matplotlib.pyplot as plt
+        import pandas as pd
         dataset = pd.read_csv(dir)
         X = dataset.iloc[:, :-1].values
         y = dataset.iloc[:, -1].values
@@ -1005,11 +1025,15 @@ class classification:
         from sklearn.metrics import confusion_matrix, accuracy_score
         cm = confusion_matrix(y_test, y_pred)
         print(cm)
-        accuracy_score(y_test, y_pred)
+        score = accuracy_score(y_test, y_pred)
+        return score
 
     def randomForestClassification(self,dir):
                 
         # Importing the dataset
+        import numpy as np
+        import matplotlib.pyplot as plt
+        import pandas as pd
         dataset = pd.read_csv(dir)
         X = dataset.iloc[:, :-1].values
         y = dataset.iloc[:, -1].values
@@ -1068,11 +1092,16 @@ class classification:
         from sklearn.metrics import confusion_matrix, accuracy_score
         cm = confusion_matrix(y_test, y_pred)
         print(cm)
-        accuracy_score(y_test, y_pred)
-        
+        score = accuracy_score(y_test, y_pred)
+        return score
+
+
     def xgBoostC(self,dir):
         
         # Importing the dataset
+        import numpy as np
+        import matplotlib.pyplot as plt
+        import pandas as pd
         dataset = pd.read_csv(dir)
         X = dataset.iloc[:, :-1].values
         y = dataset.iloc[:, -1].values
@@ -1116,16 +1145,19 @@ class classification:
         y_pred = classifier.predict(X_test)
         cm = confusion_matrix(y_test, y_pred)
         print(cm)
-        accuracy_score(y_test, y_pred)
+        score = accuracy_score(y_test, y_pred)
         
         # Applying k-Fold Cross Validation
         from sklearn.model_selection import cross_val_score
         accuracies = cross_val_score(estimator = classifier, X = X_train, y = y_train, cv = 10)
         print("Accuracy: {:.2f} %".format(accuracies.mean()*100))
         print("Standard Deviation: {:.2f} %".format(accuracies.std()*100))
+        return score
         
     def catBoostC(self,dir):
-        
+        import numpy as np
+        import matplotlib.pyplot as plt
+        import pandas as pd
         dataset = pd.read_csv(dir)
         X = dataset.iloc[:, :-1].values
         y = dataset.iloc[:, -1].values
@@ -1170,7 +1202,7 @@ class classification:
         y_pred = classifier.predict(X_test)
         cm = confusion_matrix(y_test, y_pred)
         print(cm)
-        accuracy_score(y_test, y_pred)
+        score = accuracy_score(y_test, y_pred)
         
         # Applying k-Fold Cross Validation
         from sklearn.model_selection import cross_val_score
@@ -1178,6 +1210,8 @@ class classification:
         accuracies = cross_val_score(estimator=classifier, X=X_train, y=y_train, cv=10)
         print("Accuracy: {:.2f} %".format(accuracies.mean() * 100))
         print("Standard Deviation: {:.2f} %".format(accuracies.std() * 100))
+        return score
+
         
 class clustering:
     
@@ -1188,11 +1222,17 @@ class clustering:
         import pandas as pd
         
     def k_MeansClustering(self,dir):
-        
         # Importing the dataset
+        import numpy as np
+        import matplotlib.pyplot as plt
+        import pandas as pd
+        from sklearn.metrics import v_measure_score
+        #from sklearn.metrics import silhouette_score
+        
         dataset = pd.read_csv(dir)
         X = dataset.iloc[:, :-1].values
-        
+        y = dataset.iloc[:, -1].values
+
         stridx = []
         for x in range(0, len(X[0])):
             if isinstance(X[0][x], str):
@@ -1207,29 +1247,57 @@ class clustering:
             X = np.array(ct.fit_transform(X))
             print(X)
         
+        from sklearn.preprocessing import LabelEncoder
+        if isinstance(y[0], str):
+            # removing the string from dependent variable
+            le = LabelEncoder()
+            y = le.fit_transform(y)
         # Using the elbow method to find the optimal number of clusters
         from sklearn.cluster import KMeans
-        wcss = []
-        for i in range(1, 11):
+        # wcss = []
+        # for i in range(1, 11):
+        #     kmeans = KMeans(n_clusters = i, init = 'k-means++', random_state = 42)
+        #     kmeans.fit(X)
+        #     wcss.append(kmeans.inertia_)
+
+        # V Measure
+        v_scores = []
+        for i in range(1,11):
             kmeans = KMeans(n_clusters = i, init = 'k-means++', random_state = 42)
             kmeans.fit(X)
-            wcss.append(kmeans.inertia_)
-        plt.plot(range(1, 11), wcss)
-        plt.title('The Elbow Method')
+            y_pred = kmeans.fit_predict(X)
+            v_scores.append(v_measure_score(y, y_pred))
+
+        # plt.plot(range(1, 11), wcss)
+        # plt.title('The Elbow Method')
+        # plt.xlabel('Number of clusters')
+        # plt.ylabel('WCSS')
+        # plt.show()
+        bestC = v_scores.index(max(v_scores))
+        plt.plot(range(1, 11), v_scores)
+        plt.title('V Measure')
         plt.xlabel('Number of clusters')
-        plt.ylabel('WCSS')
-        plt.show()
-        
+        plt.ylabel('score')
+        #plt.show()
+
         # Training the K-Means model on the dataset
-        kmeans = KMeans(n_clusters = 5, init = 'k-means++', random_state = 42)
-        y_kmeans = kmeans.fit_predict(X)
+        kmeans = KMeans(n_clusters = bestC, init = 'k-means++', random_state = 42)
+        y_pred = kmeans.fit_predict(X)
+        print(y_pred)
+        return v_scores
 
     def hierarchicalClustering(self,dir):
         
         # Importing the dataset
+        import numpy as np
+        import matplotlib.pyplot as plt
+        import pandas as pd
+        from sklearn.metrics import v_measure_score
+
         dataset = pd.read_csv(dir)
         X = dataset.iloc[:, :-1].values
-        
+        y = dataset.iloc[:, -1].values
+
         stridx = []
         for x in range(0, len(X[0])):
             if isinstance(X[0][x], str):
@@ -1244,19 +1312,42 @@ class clustering:
             X = np.array(ct.fit_transform(X))
             print(X)
         
+        from sklearn.preprocessing import LabelEncoder
+        if isinstance(y[0], str):
+            # removing the string from dependent variable
+            le = LabelEncoder()
+            y = le.fit_transform(y)
         
+        
+        #WARNING for huge data it will get error
         # Using the dendrogram to find the optimal number of clusters
-        import scipy.cluster.hierarchy as sch
-        dendrogram = sch.dendrogram(sch.linkage(X, method = 'ward'))
-        plt.title('Dendrogram')
-        plt.xlabel('Customers')
-        plt.ylabel('Euclidean distances')
-        plt.show()
+        # import scipy.cluster.hierarchy as sch
+        # dendrogram = sch.dendrogram(sch.linkage(X, method = 'ward'))
+        # plt.title('Dendrogram')
+        # plt.xlabel('Customers')
+        # plt.ylabel('Euclidean distances')
+        # plt.show()
         
         # Training the Hierarchical Clustering model on the dataset
         from sklearn.cluster import AgglomerativeClustering
-        hc = AgglomerativeClustering(n_clusters = 5, affinity = 'euclidean', linkage = 'ward')
-        y_hc = hc.fit_predict(X)
+        v_scores = []
+        for i in range(1,11):
+            hc = AgglomerativeClustering(n_clusters = i, affinity = 'euclidean', linkage = 'ward')
+            y_pred = hc.fit_predict(X)
+           
+            v_scores.append(v_measure_score(y, y_pred))
+        
+        bestC = v_scores.index(max(v_scores))
+        plt.plot(range(1, 11), v_scores)
+        plt.title('V Measure')
+        plt.xlabel('Number of clusters')
+        plt.ylabel('score')
+        #plt.show()
+
+        hc = AgglomerativeClustering(n_clusters = bestC, affinity = 'euclidean', linkage = 'ward')
+        y_pred = hc.fit_predict(X)
+        
+        return v_scores
         
 class associationRuleLearning:
     def __init__(self):
@@ -1266,7 +1357,9 @@ class associationRuleLearning:
         import pandas as pd
         
     def apriori(self,dir):
-        
+        import numpy as np
+        import matplotlib.pyplot as plt
+        import pandas as pd
         # Data Preprocessing
         dataset = pd.read_csv(dir, header = None)
         transactions = []
@@ -1298,10 +1391,15 @@ class associationRuleLearning:
         print(resultsinDataFrame)
         
         ## Displaying the results sorted by descending lifts
-        print(resultsinDataFrame.nlargest(n = 10, columns = 'Lift'))
-        
+        result = resultsinDataFrame.nlargest(n = 10, columns = 'Lift')
+        print(result)
+        return result
+
+
     def eclat(self,dir):
-        
+        import numpy as np
+        import matplotlib.pyplot as plt
+        import pandas as pd
         #Data Preprocessing
         dataset = pd.read_csv(dir, header = None)
         transactions = []
@@ -1330,7 +1428,9 @@ class associationRuleLearning:
         print(resultsinDataFrame)
         
         ## Displaying the results sorted by descending supports
-        print(resultsinDataFrame.nlargest(n = 10, columns = 'Support'))
+        result = resultsinDataFrame.nlargest(n = 10, columns = 'Support')
+        print(result)
+        return result
         
 class reinforcementLearning:
     def __init__(self):
@@ -1340,14 +1440,38 @@ class reinforcementLearning:
         import pandas as pd
         
     def upperConfidenceBound(self,dir):
-        
+        import numpy as np
+        import matplotlib.pyplot as plt
+        import pandas as pd
         # Importing the dataset
         dataset = pd.read_csv(dir)
+        temp=dataset
+        X=dataset.iloc[:,].values
+        print(len(X),len(X[0]))
+        stridx = []
+
+        for x in range(0, len(X[0])):
+            if isinstance(X[0][x], str):
+                stridx.append(x)
+                print("Encoding Here",X[0][x])
+        
+        # removing the string from independent variable
+        from sklearn.compose import ColumnTransformer
+        from sklearn.preprocessing import OneHotEncoder
+        
+        for i in stridx:
+            ct = ColumnTransformer(transformers=[('encoder', OneHotEncoder(), [i])], remainder='passthrough')
+            X = np.array(ct.fit_transform(X))
+            
         
         # Implementing UCB
         import math
-        N = 10000
-        d = 10
+        N = len(X)
+        d = len(X[0])
+        
+        print(X, N, d)
+        dataset = pd.DataFrame(X)
+        print(dataset)
         ads_selected = []
         numbers_of_selections = [0] * d
         sums_of_rewards = [0] * d
@@ -1376,17 +1500,43 @@ class reinforcementLearning:
         plt.title('Histogram of ads selections')
         plt.xlabel('Ads')
         plt.ylabel('Number of times each ad was selected')
-        plt.show()
+        #plt.show()
+        print(ads_selected)
+        return ads_selected
         
     def thompsonSampling(self,dir):
-        
+        import numpy as np
+        import matplotlib.pyplot as plt
+        import pandas as pd
         # Importing the dataset
         dataset = pd.read_csv(dir)
+        temp=dataset
+        X=dataset.iloc[:,].values
+        print(len(X),len(X[0]))
+        stridx = []
+
+        for x in range(0, len(X[0])):
+            if isinstance(X[0][x], str):
+                stridx.append(x)
+                print("Encoding Here",X[0][x])
         
-        # Implementing Thompson Sampling
-        import random
-        N = 10000
-        d = 10
+        # removing the string from independent variable
+        from sklearn.compose import ColumnTransformer
+        from sklearn.preprocessing import OneHotEncoder
+        
+        for i in stridx:
+            ct = ColumnTransformer(transformers=[('encoder', OneHotEncoder(), [i])], remainder='passthrough')
+            X = np.array(ct.fit_transform(X))
+            
+        
+        # Implementing UCB
+        import math
+        N = len(X)
+        d = len(X[0])
+        
+        print(X, N, d)
+        dataset = pd.DataFrame(X)
+        print(dataset)
         ads_selected = []
         numbers_of_rewards_1 = [0] * d
         numbers_of_rewards_0 = [0] * d
@@ -1412,7 +1562,9 @@ class reinforcementLearning:
         plt.title('Histogram of ads selections')
         plt.xlabel('Ads')
         plt.ylabel('Number of times each ad was selected')
-        plt.show()
+        #plt.show()
+        print(ads_selected)
+        return ads_selected
         
 class naturalLanguageProcessing:
     def __init__(self):
@@ -1422,7 +1574,9 @@ class naturalLanguageProcessing:
         import pandas as pd
     
     def bagOfWordsNB(self,dir):
-                
+        import numpy as np
+        import matplotlib.pyplot as plt
+        import pandas as pd
         # Importing the dataset
         dataset = pd.read_csv(dir, delimiter = '\t', quoting = 3)
         
@@ -1468,11 +1622,13 @@ class naturalLanguageProcessing:
         from sklearn.metrics import confusion_matrix, accuracy_score
         cm = confusion_matrix(y_test, y_pred)
         print(cm)
-        accuracy_score(y_test, y_pred)
+        return accuracy_score(y_test, y_pred)
         
         
     def bagOfWordsLR(self,dir):
-                
+        import numpy as np
+        import matplotlib.pyplot as plt
+        import pandas as pd  
         # Importing the dataset
         dataset = pd.read_csv(dir, delimiter = '\t', quoting = 3)
         
@@ -1518,10 +1674,12 @@ class naturalLanguageProcessing:
         from sklearn.metrics import confusion_matrix, accuracy_score
         cm = confusion_matrix(y_test, y_pred)
         print(cm)
-        accuracy_score(y_test, y_pred)
+        return accuracy_score(y_test, y_pred)
     
     def bagOfWordsKNN(self,dir):
-                
+        import numpy as np
+        import matplotlib.pyplot as plt
+        import pandas as pd     
         # Importing the dataset
         dataset = pd.read_csv(dir, delimiter = '\t', quoting = 3)
         
@@ -1569,10 +1727,12 @@ class naturalLanguageProcessing:
         from sklearn.metrics import confusion_matrix, accuracy_score
         cm = confusion_matrix(y_test, y_pred)
         print(cm)
-        accuracy_score(y_test, y_pred)
+        return accuracy_score(y_test, y_pred)
         
     def bagOfWordsSVM(self,dir):
-                
+        import numpy as np
+        import matplotlib.pyplot as plt
+        import pandas as pd        
         # Importing the dataset
         dataset = pd.read_csv(dir, delimiter = '\t', quoting = 3)
         
@@ -1622,10 +1782,12 @@ class naturalLanguageProcessing:
         from sklearn.metrics import confusion_matrix, accuracy_score
         cm = confusion_matrix(y_test, y_pred)
         print(cm)
-        accuracy_score(y_test, y_pred)
+        return accuracy_score(y_test, y_pred)
         
     def bagOfWordsKSVM(self,dir):
-                
+        import numpy as np
+        import matplotlib.pyplot as plt
+        import pandas as pd        
         # Importing the dataset
         dataset = pd.read_csv(dir, delimiter = '\t', quoting = 3)
         
@@ -1676,10 +1838,12 @@ class naturalLanguageProcessing:
         from sklearn.metrics import confusion_matrix, accuracy_score
         cm = confusion_matrix(y_test, y_pred)
         print(cm)
-        accuracy_score(y_test, y_pred)
+        return accuracy_score(y_test, y_pred)
 
     def bagOfWordsDTC(self,dir):
-                
+        import numpy as np
+        import matplotlib.pyplot as plt
+        import pandas as pd        
         # Importing the dataset
         dataset = pd.read_csv(dir, delimiter = '\t', quoting = 3)
         
@@ -1730,10 +1894,12 @@ class naturalLanguageProcessing:
         from sklearn.metrics import confusion_matrix, accuracy_score
         cm = confusion_matrix(y_test, y_pred)
         print(cm)
-        accuracy_score(y_test, y_pred)
+        return accuracy_score(y_test, y_pred)
         
     def bagOfWordsRFC(self,dir):
-                
+        import numpy as np
+        import matplotlib.pyplot as plt
+        import pandas as pd        
         # Importing the dataset
         dataset = pd.read_csv(dir, delimiter = '\t', quoting = 3)
         
@@ -1781,11 +1947,13 @@ class naturalLanguageProcessing:
         from sklearn.metrics import confusion_matrix, accuracy_score
         cm = confusion_matrix(y_test, y_pred)
         print(cm)
-        accuracy_score(y_test, y_pred)
+        return accuracy_score(y_test, y_pred)
         
         
     def bagOfWordsXGB(self,dir):
-                
+        import numpy as np
+        import matplotlib.pyplot as plt
+        import pandas as pd        
         # Importing the dataset
         dataset = pd.read_csv(dir, delimiter = '\t', quoting = 3)
         
@@ -1833,7 +2001,7 @@ class naturalLanguageProcessing:
         from sklearn.metrics import confusion_matrix, accuracy_score
         cm = confusion_matrix(y_test, y_pred)
         print(cm)
-        accuracy_score(y_test, y_pred)
+        return accuracy_score(y_test, y_pred)
         
 class deepLearning:
     def __init__(self):
@@ -1942,7 +2110,9 @@ class deepLearning:
         print(cm)
         accuracy_score(y_test, y_pred)
     def convolutionalNeuralNetwork(self,dir):
-        
+        import numpy as np
+        import matplotlib.pyplot as plt
+        import pandas as pd
         # Importing the libraries
         import tensorflow as tf
         from keras.preprocessing.image import ImageDataGenerator
