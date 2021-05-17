@@ -282,7 +282,7 @@ class datasetUI(QDialog):
 
 
 app = QApplication(sys.argv)
-mainWindow = Login()
+mainWindow = selectModel()
 widget = QtWidgets.QStackedWidget()
 widget.addWidget(mainWindow)
 widget.setFixedWidth(480)
