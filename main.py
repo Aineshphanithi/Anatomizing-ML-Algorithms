@@ -267,47 +267,47 @@ class datasetUI(QDialog, QThread):
             
         elif(currModel == 1):
             
-            modules.append(ML.logisticRegression(self.path))
+            modules.append(ML.logisticRegression(self.path,self.pstr))
             count += 100/9
             print("Progress Bar is updating")
             self.progressBar.setValue(count)
            
-            modules.append(ML.kNearestNeighbors(self.path))
+            modules.append(ML.kNearestNeighbors(self.path,self.pstr))
             count += 100/9
             print("Progress Bar is updating")
             self.progressBar.setValue(count)
            
-            modules.append(ML.supportVectorMachine(self.path))
+            modules.append(ML.supportVectorMachine(self.path,self.pstr))
             count += 100/9
             print("Progress Bar is updating")
             self.progressBar.setValue(count)
            
-            modules.append(ML.kernelSupportVectorMachine(self.path))
+            modules.append(ML.kernelSupportVectorMachine(self.path,self.pstr))
             count += 100/9
             print("Progress Bar is updating")
             self.progressBar.setValue(count)
            
-            modules.append(ML.naiveBayes(self.path))
+            modules.append(ML.naiveBayes(self.path,self.pstr))
             count += 100/9
             print("Progress Bar is updating")
             self.progressBar.setValue(count)
            
-            modules.append(ML.decisionTreeClassification(self.path))
+            modules.append(ML.decisionTreeClassification(self.path,self.pstr))
             count += 100/9
             print("Progress Bar is updating")
             self.progressBar.setValue(count)
            
-            modules.append(ML.randomForestClassification(self.path))
+            modules.append(ML.randomForestClassification(self.path,self.pstr))
             count += 100/9
             print("Progress Bar is updating")
             self.progressBar.setValue(count)
            
-            modules.append(ML.xgBoostC(self.path))
+            modules.append(ML.xgBoostC(self.path,self.pstr))
             count += 100/9
             print("Progress Bar is updating")
             self.progressBar.setValue(count)
            
-            modules.append(ML.catBoostC(self.path))
+            modules.append(ML.catBoostC(self.path,self.pstr))
             count += 100/9
             print("Progress Bar is updating")
             self.progressBar.setValue(count)
@@ -425,9 +425,13 @@ class datasetUI(QDialog, QThread):
             elif(currModel == 1):
                 score = func
                 print(score)
-                scores.append(score)
+                scores.append(score[0])
                 scoresstr = [str(x) for x in scores]
-                self.scores.setText(self.stri+"\n"+" ".join(scoresstr))
+                if(score[1][0]!=-999):
+                    self.stri+="\n RMSE: "+" ".join(scoresstr)+"\nPrediction Results : "+str(score[1][0])
+                else:
+                    self.stri+="\n RMSE: "+" ".join(scoresstr)
+                self.scores.setText(self.stri)
 
             elif(currModel == 2):
                 score = func

@@ -227,7 +227,7 @@ class regression:
         # Predicting a new result with Polynomial Regression
         y_pred = lin_reg_2.predict(poly_reg.fit_transform(X_test))
         if(len(pstr[0])!=0):
-            cstpred = lin_reg_2.predict(poly_reg.fit_transform(X_test))
+            cstpred = lin_reg_2.predict(poly_reg.fit_transform(pstr))
         else:
             cstpred = [-999]
 
@@ -285,9 +285,7 @@ class regression:
             #pstr = np.array(ct.fit_transform(pstr))
             #print(X)
         #print(y)
-        if(len(pstr[0])!=0):
-            pstr = np.array([X[-1]])
-            X = X[0:-1]
+        
 
         from sklearn.preprocessing import LabelEncoder
         if isinstance(y[0], str):
@@ -304,7 +302,10 @@ class regression:
         y = sc_y.fit_transform(y)
         #print(X)
         #print(y)
-        
+        if(len(pstr[0])!=0):
+            pstr = np.array([X[-1]])
+            X = X[0:-1]
+
         from sklearn.model_selection import train_test_split
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2, random_state = 0)
         
@@ -683,7 +684,7 @@ class classification:
         import matplotlib.pyplot as plt
         import pandas as pd
         
-    def logisticRegression(self,dir):
+    def logisticRegression(self,dir,pstr):
         import numpy as np
         import matplotlib.pyplot as plt
         import pandas as pd
@@ -699,6 +700,8 @@ class classification:
             if isinstance(X[0][x], str):
                 stridx.append(x)
         
+        if(len(pstr[0])!=0):
+            X = np.vstack((X,np.array(pstr[0])))
         # removing the string from independent variable
         from sklearn.compose import ColumnTransformer
         from sklearn.preprocessing import OneHotEncoder
@@ -706,17 +709,20 @@ class classification:
         for i in stridx:
             ct = ColumnTransformer(transformers=[('encoder', OneHotEncoder(), [i])], remainder='passthrough')
             X = np.array(ct.fit_transform(X))
-            print(X)
+            # print(X)
         
         
+
         from sklearn.preprocessing import LabelEncoder
         
         if isinstance(y[0], str):
             # removing the string from dependent variable
             le = LabelEncoder()
             y = le.fit_transform(y)
-        print(y)
-        
+        # print(y)
+        if(len(pstr[0])!=0):
+            pstr = np.array([X[-1]])
+            X = X[0:-1]
         # Splitting the dataset into the Training set and Test set
         from sklearn.model_selection import train_test_split
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.25, random_state = 0)
@@ -726,8 +732,8 @@ class classification:
         sc = StandardScaler()
         X_train = sc.fit_transform(X_train)
         X_test = sc.transform(X_test)
-        print(X_train)
-        print(X_test)
+        # print(X_train)
+        # print(X_test)
         
         # Training the Logistic Regression model on the Training set
         from sklearn.linear_model import LogisticRegression
@@ -740,16 +746,19 @@ class classification:
         # Predicting the Test set results
         y_pred = classifier.predict(X_test)
         print(np.concatenate((y_pred.reshape(len(y_pred),1), y_test.reshape(len(y_test),1)),1))
-        
+        if(len(pstr[0])!=0):
+            cstpred = classifier.predict(pstr)
+        else:
+            cstpred = [-999]
         # Making the Confusion Matrix
         from sklearn.metrics import confusion_matrix, accuracy_score
         cm = confusion_matrix(y_test, y_pred)
         print(cm)
         score = accuracy_score(y_test, y_pred)
-        return score
+        return [score,cstpred]
 
 
-    def kNearestNeighbors(self,dir):
+    def kNearestNeighbors(self,dir,pstr):
         import numpy as np
         import matplotlib.pyplot as plt
         import pandas as pd
@@ -764,7 +773,9 @@ class classification:
         for x in range(0, len(X[0])):
             if isinstance(X[0][x], str):
                 stridx.append(x)
-        
+        if(len(pstr[0])!=0):
+            X = np.vstack((X,np.array(pstr[0])))
+
         # removing the string from independent variable
         from sklearn.compose import ColumnTransformer
         from sklearn.preprocessing import OneHotEncoder
@@ -782,7 +793,10 @@ class classification:
             le = LabelEncoder()
             y = le.fit_transform(y)
         print(y)
-        
+        if(len(pstr[0])!=0):
+            pstr = np.array([X[-1]])
+            X = X[0:-1]
+
         # Splitting the dataset into the Training set and Test set
         from sklearn.model_selection import train_test_split
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.25, random_state = 0)
@@ -806,6 +820,11 @@ class classification:
         
         # Predicting the Test set results
         y_pred = classifier.predict(X_test)
+        if(len(pstr[0])!=0):
+            cstpred = classifier.predict(pstr)
+        else:
+            cstpred = [-999]
+
         print(np.concatenate((y_pred.reshape(len(y_pred),1), y_test.reshape(len(y_test),1)),1))
         
         # Making the Confusion Matrix
@@ -813,9 +832,9 @@ class classification:
         cm = confusion_matrix(y_test, y_pred)
         print(cm)
         score=accuracy_score(y_test, y_pred)
-        return score
+        return [score,cstpred]
 
-    def supportVectorMachine(self,dir):
+    def supportVectorMachine(self,dir,pstr):
                 
         # Importing the dataset
         import numpy as np
@@ -831,7 +850,8 @@ class classification:
         for x in range(0, len(X[0])):
             if isinstance(X[0][x], str):
                 stridx.append(x)
-        
+        if(len(pstr[0])!=0):
+            X = np.vstack((X,np.array(pstr[0])))
         # removing the string from independent variable
         from sklearn.compose import ColumnTransformer
         from sklearn.preprocessing import OneHotEncoder
@@ -849,7 +869,9 @@ class classification:
             le = LabelEncoder()
             y = le.fit_transform(y)
         print(y)
-        
+        if(len(pstr[0])!=0):
+            pstr = np.array([X[-1]])
+            X = X[0:-1]
         # Splitting the dataset into the Training set and Test set
         from sklearn.model_selection import train_test_split
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.25, random_state = 0)
@@ -873,16 +895,19 @@ class classification:
         # Predicting the Test set results
         y_pred = classifier.predict(X_test)
         print(np.concatenate((y_pred.reshape(len(y_pred),1), y_test.reshape(len(y_test),1)),1))
-        
+        if(len(pstr[0])!=0):
+            cstpred = classifier.predict(pstr)
+        else:
+            cstpred = [-999]
         # Making the Confusion Matrix
         from sklearn.metrics import confusion_matrix, accuracy_score
         cm = confusion_matrix(y_test, y_pred)
         print(cm)
         score = accuracy_score(y_test, y_pred)
-        return score
+        return [score,cstpred]
 
 
-    def kernelSupportVectorMachine(self,dir):
+    def kernelSupportVectorMachine(self,dir,pstr):
                 
         # Importing the dataset
         import numpy as np
@@ -898,7 +923,9 @@ class classification:
         for x in range(0, len(X[0])):
             if isinstance(X[0][x], str):
                 stridx.append(x)
-        
+        if(len(pstr[0])!=0):
+            X = np.vstack((X,np.array(pstr[0])))
+
         # removing the string from independent variable
         from sklearn.compose import ColumnTransformer
         from sklearn.preprocessing import OneHotEncoder
@@ -916,7 +943,10 @@ class classification:
             le = LabelEncoder()
             y = le.fit_transform(y)
         print(y)
-        
+        if(len(pstr[0])!=0):
+            pstr = np.array([X[-1]])
+            X = X[0:-1]
+
         # Splitting the dataset into the Training set and Test set
         from sklearn.model_selection import train_test_split
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.25, random_state = 0)
@@ -940,6 +970,10 @@ class classification:
         
         # Predicting the Test set results
         y_pred = classifier.predict(X_test)
+        if(len(pstr[0])!=0):
+            cstpred = classifier.predict(pstr)
+        else:
+            cstpred = [-999]
         print(np.concatenate((y_pred.reshape(len(y_pred),1), y_test.reshape(len(y_test),1)),1))
         
         # Making the Confusion Matrix
@@ -947,9 +981,9 @@ class classification:
         cm = confusion_matrix(y_test, y_pred)
         print(cm)
         score = accuracy_score(y_test, y_pred)
-        return score
+        return [score,cstpred]
 
-    def naiveBayes(self,dir):
+    def naiveBayes(self,dir,pstr):
  
         # Importing the dataset
         import numpy as np
@@ -965,7 +999,8 @@ class classification:
         for x in range(0, len(X[0])):
             if isinstance(X[0][x], str):
                 stridx.append(x)
-        
+        if(len(pstr[0])!=0):
+            X = np.vstack((X,np.array(pstr[0])))
         # removing the string from independent variable
         from sklearn.compose import ColumnTransformer
         from sklearn.preprocessing import OneHotEncoder
@@ -983,7 +1018,9 @@ class classification:
             le = LabelEncoder()
             y = le.fit_transform(y)
         print(y)
-        
+        if(len(pstr[0])!=0):
+            pstr = np.array([X[-1]])
+            X = X[0:-1]
         # Splitting the dataset into the Training set and Test set
         from sklearn.model_selection import train_test_split
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.25, random_state = 0)
@@ -1007,6 +1044,10 @@ class classification:
         
         # Predicting the Test set results
         y_pred = classifier.predict(X_test)
+        if(len(pstr[0])!=0):
+            cstpred = classifier.predict(pstr)
+        else:
+            cstpred = [-999]
         print(np.concatenate((y_pred.reshape(len(y_pred),1), y_test.reshape(len(y_test),1)),1))
         
         # Making the Confusion Matrix
@@ -1014,10 +1055,10 @@ class classification:
         cm = confusion_matrix(y_test, y_pred)
         print(cm)
         score = accuracy_score(y_test, y_pred)
-        return score
+        return [score,cstpred]
 
 
-    def decisionTreeClassification(self,dir):
+    def decisionTreeClassification(self,dir,pstr):
         
         # Importing the dataset
         import numpy as np
@@ -1033,7 +1074,8 @@ class classification:
         for x in range(0, len(X[0])):
             if isinstance(X[0][x], str):
                 stridx.append(x)
-        
+        if(len(pstr[0])!=0):
+            X = np.vstack((X,np.array(pstr[0])))
         # removing the string from independent variable
         from sklearn.compose import ColumnTransformer
         from sklearn.preprocessing import OneHotEncoder
@@ -1051,7 +1093,9 @@ class classification:
             le = LabelEncoder()
             y = le.fit_transform(y)
         print(y)
-        
+        if(len(pstr[0])!=0):
+            pstr = np.array([X[-1]])
+            X = X[0:-1]
         # Splitting the dataset into the Training set and Test set
         from sklearn.model_selection import train_test_split
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.25, random_state = 0)
@@ -1075,15 +1119,18 @@ class classification:
         # Predicting the Test set results
         y_pred = classifier.predict(X_test)
         print(np.concatenate((y_pred.reshape(len(y_pred),1), y_test.reshape(len(y_test),1)),1))
-        
+        if(len(pstr[0])!=0):
+            cstpred = classifier.predict(pstr)
+        else:
+            cstpred = [-999]
         # Making the Confusion Matrix
         from sklearn.metrics import confusion_matrix, accuracy_score
         cm = confusion_matrix(y_test, y_pred)
         print(cm)
         score = accuracy_score(y_test, y_pred)
-        return score
+        return [score,cstpred]
 
-    def randomForestClassification(self,dir):
+    def randomForestClassification(self,dir,pstr):
                 
         # Importing the dataset
         import numpy as np
@@ -1099,7 +1146,8 @@ class classification:
         for x in range(0, len(X[0])):
             if isinstance(X[0][x], str):
                 stridx.append(x)
-        
+        if(len(pstr[0])!=0):
+            X = np.vstack((X,np.array(pstr[0])))
         # removing the string from independent variable
         from sklearn.compose import ColumnTransformer
         from sklearn.preprocessing import OneHotEncoder
@@ -1117,7 +1165,9 @@ class classification:
             le = LabelEncoder()
             y = le.fit_transform(y)
         print(y)
-        
+        if(len(pstr[0])!=0):
+            pstr = np.array([X[-1]])
+            X = X[0:-1]
         # Splitting the dataset into the Training set and Test set
         from sklearn.model_selection import train_test_split
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.25, random_state = 0)
@@ -1141,6 +1191,10 @@ class classification:
         
         # Predicting the Test set results
         y_pred = classifier.predict(X_test)
+        if(len(pstr[0])!=0):
+            cstpred = classifier.predict(pstr)
+        else:
+            cstpred = [-999]
         print(np.concatenate((y_pred.reshape(len(y_pred),1), y_test.reshape(len(y_test),1)),1))
         
         # Making the Confusion Matrix
@@ -1148,10 +1202,10 @@ class classification:
         cm = confusion_matrix(y_test, y_pred)
         print(cm)
         score = accuracy_score(y_test, y_pred)
-        return score
+        return [score,cstpred]
 
 
-    def xgBoostC(self,dir):
+    def xgBoostC(self,dir,pstr):
         
         # Importing the dataset
         import numpy as np
@@ -1167,7 +1221,8 @@ class classification:
         for x in range(0, len(X[0])):
             if isinstance(X[0][x], str):
                 stridx.append(x)
-        
+        if(len(pstr[0])!=0):
+            X = np.vstack((X,np.array(pstr[0])))
         # removing the string from independent variable
         from sklearn.compose import ColumnTransformer
         from sklearn.preprocessing import OneHotEncoder
@@ -1185,7 +1240,9 @@ class classification:
             le = LabelEncoder()
             y = le.fit_transform(y)
         print(y)
-        
+        if(len(pstr[0])!=0):
+            pstr = np.array([X[-1]])
+            X = X[0:-1]
         # Splitting the dataset into the Training set and Test set
         from sklearn.model_selection import train_test_split
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2, random_state = 0)
@@ -1198,6 +1255,10 @@ class classification:
         # Making the Confusion Matrix
         from sklearn.metrics import confusion_matrix, accuracy_score
         y_pred = classifier.predict(X_test)
+        if(len(pstr[0])!=0):
+            cstpred = classifier.predict(pstr)
+        else:
+            cstpred = [-999]
         cm = confusion_matrix(y_test, y_pred)
         print(cm)
         score = accuracy_score(y_test, y_pred)
@@ -1207,9 +1268,9 @@ class classification:
         accuracies = cross_val_score(estimator = classifier, X = X_train, y = y_train, cv = 10)
         print("Accuracy: {:.2f} %".format(accuracies.mean()*100))
         print("Standard Deviation: {:.2f} %".format(accuracies.std()*100))
-        return score
+        return [score,cstpred]
         
-    def catBoostC(self,dir):
+    def catBoostC(self,dir,pstr):
         import numpy as np
         import matplotlib.pyplot as plt
         import pandas as pd
@@ -1223,7 +1284,8 @@ class classification:
         for x in range(0, len(X[0])):
             if isinstance(X[0][x], str):
                 stridx.append(x)
-        
+        if(len(pstr[0])!=0):
+            X = np.vstack((X,np.array(pstr[0])))
         # removing the string from independent variable
         from sklearn.compose import ColumnTransformer
         from sklearn.preprocessing import OneHotEncoder
@@ -1241,7 +1303,9 @@ class classification:
             le = LabelEncoder()
             y = le.fit_transform(y)
         print(y)
-        
+        if(len(pstr[0])!=0):
+            pstr = np.array([X[-1]])
+            X = X[0:-1]
         # Splitting the dataset into the Training set and Test set
         from sklearn.model_selection import train_test_split
         
@@ -1255,6 +1319,10 @@ class classification:
         from sklearn.metrics import confusion_matrix, accuracy_score
         
         y_pred = classifier.predict(X_test)
+        if(len(pstr[0])!=0):
+            cstpred = classifier.predict(pstr)
+        else:
+            cstpred = [-999]
         cm = confusion_matrix(y_test, y_pred)
         print(cm)
         score = accuracy_score(y_test, y_pred)
@@ -1265,7 +1333,7 @@ class classification:
         accuracies = cross_val_score(estimator=classifier, X=X_train, y=y_train, cv=10)
         print("Accuracy: {:.2f} %".format(accuracies.mean() * 100))
         print("Standard Deviation: {:.2f} %".format(accuracies.std() * 100))
-        return score
+        return [score,cstpred]
 
         
 class clustering:
