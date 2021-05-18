@@ -416,7 +416,10 @@ class datasetUI(QDialog, QThread):
                 
                 scores.append(score[1].real)
                 scoresstr = [str(x) for x in scores]
-                self.stri+="\n RMSE: "+" ".join(scoresstr)+"\nPrediction Results : "+str(score[-1][0])
+                if(score[-1][0]!=-999):
+                    self.stri+="\n RMSE: "+" ".join(scoresstr)+"\nPrediction Results : "+str(score[-1][0])
+                else:
+                    self.stri+="\n RMSE: "+" ".join(scoresstr)
                 self.scores.setText(self.stri)
                 
             elif(currModel == 1):
