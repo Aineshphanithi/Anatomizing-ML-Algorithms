@@ -103,7 +103,7 @@ class regression:
     #     y_pred = regressor.predict(X_test)
     
 
-    def multipleLinearRegression(self,dir):
+    def multipleLinearRegression(self,dir,pstr):
         import numpy as np
         import matplotlib.pyplot as plt
         import pandas as pd
@@ -118,7 +118,7 @@ class regression:
             if isinstance(X[0][x], str):
                 stridx.append(x)
         
-        
+        X = np.vstack((X,np.array(pstr[0])))
         # removing the string from independent variable
         from sklearn.compose import ColumnTransformer
         from sklearn.preprocessing import OneHotEncoder
@@ -126,8 +126,11 @@ class regression:
         for i in stridx:
             ct = ColumnTransformer(transformers=[('encoder', OneHotEncoder(), [i])], remainder='passthrough')
             X = np.array(ct.fit_transform(X))
-            print(X)
-        
+            
+            #pstr = np.array(ct.fit_transform(pstr))
+        pstr = np.array([X[-1]])
+        X = X[0:-1]
+
         from sklearn.preprocessing import LabelEncoder
         if isinstance(y[0], str):
             # removing the string from dependent variable
@@ -147,6 +150,7 @@ class regression:
         
         # Predicting the Test set results
         y_pred = regressor.predict(X_test)
+        print(X_test,pstr)
         #accScore = accuracy_score(y_test, y_pred)
         np.set_printoptions(precision=2)
         #print(np.concatenate((y_pred.reshape(len(y_pred),1), y_test.reshape(len(y_test),1)),1))
@@ -162,15 +166,15 @@ class regression:
 
         # plt.show()
         # print(y_test,y_pred)
-
+        print(X_test,pstr)
         from sklearn.metrics import mean_squared_error
         import cmath
         mse = mean_squared_error(y_test, y_pred)
         rmse = cmath.sqrt(mse)
         print("multiple Linear Regression")
-        return [str(np.concatenate((y_pred.reshape(len(y_pred),1), y_test.reshape(len(y_test),1)),1)),rmse]
+        return [str(np.concatenate((y_pred.reshape(len(y_pred),1), y_test.reshape(len(y_test),1)),1)),rmse,regressor.predict(pstr)]
 
-    def polynomialRegression(self,dir):
+    def polynomialRegression(self,dir,pstr):
         import numpy as np
         import matplotlib.pyplot as plt
         import pandas as pd
@@ -185,7 +189,7 @@ class regression:
             if isinstance(X[0][x], str):
                 stridx.append(x)
         
-        
+        X = np.vstack((X,np.array(pstr[0])))
         # removing the string from independent variable
         from sklearn.compose import ColumnTransformer
         from sklearn.preprocessing import OneHotEncoder
@@ -193,8 +197,12 @@ class regression:
         for i in stridx:
             ct = ColumnTransformer(transformers=[('encoder', OneHotEncoder(), [i])], remainder='passthrough')
             X = np.array(ct.fit_transform(X))
+            pstr = np.array(ct.fit_transform(pstr))
             #print(X)
         #print(y)
+        pstr = np.array([X[-1]])
+        X = X[0:-1]
+
         from sklearn.preprocessing import LabelEncoder
         if isinstance(y[0], str):
             # removing the string from dependent variable
@@ -239,10 +247,10 @@ class regression:
         mse = mean_squared_error(y_test, y_pred)
         rmse = cmath.sqrt(mse)
         print("polynomial Regression")
-        return [str(np.concatenate((y_pred.reshape(len(y_pred),1), y_test.reshape(len(y_test),1)),1)),rmse]
+        return [str(np.concatenate((y_pred.reshape(len(y_pred),1), y_test.reshape(len(y_test),1)),1)),rmse,lin_reg_2.predict(poly_reg.fit_transform(pstr))]
 
         
-    def supportVectorRegression(self,dir):
+    def supportVectorRegression(self,dir,pstr):
         import numpy as np
         import matplotlib.pyplot as plt
         import pandas as pd
@@ -260,7 +268,8 @@ class regression:
             if isinstance(X[0][x], str):
                 stridx.append(x)
         
-        
+        X = np.vstack((X,np.array(pstr[0])))
+
         # removing the string from independent variable
         from sklearn.compose import ColumnTransformer
         from sklearn.preprocessing import OneHotEncoder
@@ -268,8 +277,11 @@ class regression:
         for i in stridx:
             ct = ColumnTransformer(transformers=[('encoder', OneHotEncoder(), [i])], remainder='passthrough')
             X = np.array(ct.fit_transform(X))
+            pstr = np.array(ct.fit_transform(pstr))
             #print(X)
         #print(y)
+        pstr = np.array([X[-1]])
+        X = X[0:-1]
         from sklearn.preprocessing import LabelEncoder
         if isinstance(y[0], str):
             # removing the string from dependent variable
@@ -318,10 +330,10 @@ class regression:
         mse = mean_squared_error(y_test, y_pred)
         rmse = cmath.sqrt(mse)
         print("polynomial Regression")
-        return [str(np.concatenate((y_pred.reshape(len(y_pred),1), y_test.reshape(len(y_test),1)),1)),rmse]
+        return [str(np.concatenate((y_pred.reshape(len(y_pred),1), y_test.reshape(len(y_test),1)),1)),rmse,sc_y.inverse_transform(regressor.predict(pstr))]
 
 
-    def decisionTreeRegression(self,dir):
+    def decisionTreeRegression(self,dir,pstr):
         import numpy as np
         import matplotlib.pyplot as plt
         import pandas as pd
@@ -336,7 +348,7 @@ class regression:
             if isinstance(X[0][x], str):
                 stridx.append(x)
         
-        
+        X = np.vstack((X,np.array(pstr[0])))
         # removing the string from independent variable
         from sklearn.compose import ColumnTransformer
         from sklearn.preprocessing import OneHotEncoder
@@ -344,6 +356,7 @@ class regression:
         for i in stridx:
             ct = ColumnTransformer(transformers=[('encoder', OneHotEncoder(), [i])], remainder='passthrough')
             X = np.array(ct.fit_transform(X))
+            pstr = np.array(ct.fit_transform(pstr))
             #print(X)
         #print(y)
         
@@ -353,7 +366,8 @@ class regression:
             le = LabelEncoder()
             y = le.fit_transform(y)
         #print(y)
-        
+        pstr = np.array([X[-1]])
+        X = X[0:-1]
         # Splitting the dataset into the Training set and Test set
         from sklearn.model_selection import train_test_split
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2, random_state = 0)
@@ -390,10 +404,10 @@ class regression:
         mse = mean_squared_error(y_test, y_pred)
         rmse = cmath.sqrt(mse)
         #print("polynomial Regression")
-        return [str(np.concatenate((y_pred.reshape(len(y_pred),1), y_test.reshape(len(y_test),1)),1)),rmse]
+        return [str(np.concatenate((y_pred.reshape(len(y_pred),1), y_test.reshape(len(y_test),1)),1)),rmse,regressor.predict(pstr)]
 
         
-    def randomForestRegression(self,dir):
+    def randomForestRegression(self,dir,pstr):
         import numpy as np
         import matplotlib.pyplot as plt
         import pandas as pd
@@ -408,7 +422,7 @@ class regression:
             if isinstance(X[0][x], str):
                 stridx.append(x)
         
-        
+        X = np.vstack((X,np.array(pstr[0])))
         # removing the string from independent variable
         from sklearn.compose import ColumnTransformer
         from sklearn.preprocessing import OneHotEncoder
@@ -416,9 +430,11 @@ class regression:
         for i in stridx:
             ct = ColumnTransformer(transformers=[('encoder', OneHotEncoder(), [i])], remainder='passthrough')
             X = np.array(ct.fit_transform(X))
+            pstr = np.array(ct.fit_transform(pstr))
             #print(X)
         #print(y)
-        
+        pstr = np.array([X[-1]])
+        X = X[0:-1]
         from sklearn.preprocessing import LabelEncoder
         if isinstance(y[0], str):
             # removing the string from dependent variable
@@ -462,11 +478,11 @@ class regression:
         mse = mean_squared_error(y_test, y_pred)
         rmse = cmath.sqrt(mse)
         #print("polynomial Regression")
-        return [str(np.concatenate((y_pred.reshape(len(y_pred),1), y_test.reshape(len(y_test),1)),1)),rmse]
+        return [str(np.concatenate((y_pred.reshape(len(y_pred),1), y_test.reshape(len(y_test),1)),1)),rmse,regressor.predict(pstr)]
 
 
 
-    def xgBoostR(self,dir):
+    def xgBoostR(self,dir,pstr):
         import numpy as np
         import matplotlib.pyplot as plt
         import pandas as pd
@@ -486,7 +502,7 @@ class regression:
             if isinstance(X[0][x], str):
                 stridx.append(x)
         
-        
+        X = np.vstack((X,np.array(pstr[0])))
        # print("removing the string from independent variable")
         from sklearn.compose import ColumnTransformer
         from sklearn.preprocessing import OneHotEncoder
@@ -494,9 +510,11 @@ class regression:
         for i in stridx:
             ct = ColumnTransformer(transformers=[('encoder', OneHotEncoder(), [i])], remainder='passthrough')
             X = np.array(ct.fit_transform(X))
-            #print(X)
+            pstr = np.array(ct.fit_transform(pstr))
+            
         #print(y)
-        
+        pstr = np.array([X[-1]])
+        X = X[0:-1]
         from sklearn.preprocessing import LabelEncoder
         if isinstance(y[0], str):
             #print("removing the string from dependent variable")
@@ -514,9 +532,11 @@ class regression:
           
         # Fitting the model
         xgb_r.fit(train_X, train_y)
-          
+        
         # Predict the model
         y_pred = xgb_r.predict(test_X)
+        print(type(test_X),type(pstr))
+        pstr = xgb_r.predict(np.array(pstr))
         #print("xgboost Regression")
         # RMSE Computation
         rmse = np.sqrt(MSE(y_test, y_pred))
@@ -542,11 +562,11 @@ class regression:
         mse = mean_squared_error(y_test, y_pred)
         rmse = cmath.sqrt(mse)
         #print("polynomial Regression")
-        return [str(np.concatenate((y_pred.reshape(len(y_pred),1), y_test.reshape(len(y_test),1)),1)),rmse]
+        return [str(np.concatenate((y_pred.reshape(len(y_pred),1), y_test.reshape(len(y_test),1)),1)),rmse,pstr]
 
 
 
-    def catBoostR(self,dir):
+    def catBoostR(self,dir,pstr):
         import numpy as np
         import matplotlib.pyplot as plt
         import pandas as pd
@@ -563,7 +583,7 @@ class regression:
         for x in range(0, len(X[0])):
             if isinstance(X[0][x], str):
                 stridx.append(x)
-        
+        X = np.vstack((X,np.array(pstr[0])))
         # removing the string from independent variable
         from sklearn.compose import ColumnTransformer
         from sklearn.preprocessing import OneHotEncoder
@@ -571,9 +591,11 @@ class regression:
         for i in stridx:
             ct = ColumnTransformer(transformers=[('encoder', OneHotEncoder(), [i])], remainder='passthrough')
             X = np.array(ct.fit_transform(X))
+            pstr = np.array(ct.fit_transform(pstr))
             #print(X)
         
-        
+        pstr = np.array([X[-1]])
+        X = X[0:-1]
         from sklearn.preprocessing import LabelEncoder
         
         if isinstance(y[0], str):
@@ -614,7 +636,7 @@ class regression:
         mse = mean_squared_error(y_test, y_pred)
         rmse = cmath.sqrt(mse)
         #print("polynomial Regression")
-        return [str(np.concatenate((y_pred.reshape(len(y_pred),1), y_test.reshape(len(y_test),1)),1)),rmse]
+        return [str(np.concatenate((y_pred.reshape(len(y_pred),1), y_test.reshape(len(y_test),1)),1)),rmse, model.predict(pstr)]
 
 
     def graphs(self):

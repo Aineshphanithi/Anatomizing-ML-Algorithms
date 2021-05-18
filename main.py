@@ -6,8 +6,10 @@ from PyQt5.QtWidgets import QApplication, QWidget, QLabel
 from PyQt5.QtGui import QIcon, QPixmap
 import MLModels
 import threading
+import time
+from PyQt5.QtCore import QThread, pyqtSignal
+from PyQt5.QtWidgets import (QApplication, QDialog,QProgressBar, QPushButton)
 
-#selectmodel=0
 
 class Login(QDialog):
     def __init__(self):
@@ -156,9 +158,11 @@ class deepLearningUI(QDialog):
         widget.addWidget(dataUI)
         widget.setCurrentIndex(widget.currentIndex()+1)
 
-class datasetUI(QDialog):
+class datasetUI(QDialog, QThread):
+    stri = ""
     path=""
     currModel = 0
+    pstr = ""
     def __init__(self,selectmodel):
         
         super(datasetUI,self).__init__()
@@ -166,96 +170,289 @@ class datasetUI(QDialog):
         self.currModel = selectmodel
         loadUi("browse.ui",self)        
         self.browsebutton.clicked.connect(self.browsefiles)
+        self.progressBar.setValue(0)
         self.back.clicked.connect(self.goback)
+        
 
     def goback(self):
+
         selModScreen = selectModel()
         widget.addWidget(selModScreen)
         widget.setCurrentIndex(widget.currentIndex()+1)         
 
     def browsefiles(self,ML):
+
         if(self.currModel==7):
             fname = QFileDialog.getExistingDirectory(self,'Open Directory','E:\Machine Learning\Machine Learning A-Z (Codes and Datasets)')
             self.path = fname
             self.filename.setText(fname)
-        
+            self.stri += "Dataset Loaded from -" + fname
         else:
             fname = QFileDialog.getOpenFileName(self, 'Open File','E:\Machine Learning\Machine Learning A-Z (Codes and Datasets)')
             self.path = fname[0]
             self.filename.setText(fname[0])
-        
+            self.stri += "Dataset Loaded from -" + fname[0]
+        self.scores.setText(self.stri)
         print(fname)
         self.predictButton.clicked.connect(self.getScores)
+        
+        self.custompredict.clicked.connect(self.getScores)
+
+        
+        #str.isalnum()
     
     def getScores(self):
+
+        self.pstr = self.predicttext.toPlainText()
+        print("User Input: ", self.pstr)
+        if(',' in self.pstr):    
+            self.pstr = self.pstr.split(",")
+        temppstr=[]
+        for x in self.pstr:
+            if(x.isalpha()==False):
+                print(x.isalnum(),x)
+                temppstr.append(float(x))
+            else:
+                temppstr.append(x)
+        
+        self.pstr = [temppstr]
+
         currModel = self.currModel
         print("Current Model:",currModel)
         scores=[]
         classML = [MLModels.regression(),MLModels.classification(),MLModels.clustering(),MLModels.associationRuleLearning(),MLModels.reinforcementLearning(),MLModels.naturalLanguageProcessing(),MLModels.deepLearning(),MLModels.deepLearning()]
         print(classML)
         ML = classML[currModel]
+        modules = []
+        count=0
+        self.stri += "\n Models Initaialized"
+        self.scores.setText(self.stri)
         if(currModel==0):
-            modules = [ML.multipleLinearRegression(self.path),ML.polynomialRegression(self.path),ML.supportVectorRegression(self.path),ML.decisionTreeRegression(self.path),ML.randomForestRegression(self.path),ML.xgBoostR(self.path),ML.catBoostR(self.path)]
+            
+            modules.append(ML.multipleLinearRegression(self.path,self.pstr))
+            count += 100/7
+            print("Progress Bar is updating")
+            self.progressBar.setValue(count)
+            
+            modules.append(ML.polynomialRegression(self.path,self.pstr))
+            count += 100/7
+            print("Progress Bar is updating")
+            self.progressBar.setValue(count)
+            
+            modules.append(ML.supportVectorRegression(self.path,self.pstr))
+            count += 100/7
+            print("Progress Bar is updating")
+            self.progressBar.setValue(count)
+            
+            modules.append(ML.decisionTreeRegression(self.path,self.pstr))
+            count += 100/7
+            print("Progress Bar is updating")
+            self.progressBar.setValue(count)
+            
+            modules.append(ML.randomForestRegression(self.path,self.pstr))
+            count += 100/7
+            print("Progress Bar is updating")
+            self.progressBar.setValue(count)
+            
+            modules.append(ML.xgBoostR(self.path,self.pstr))
+            count += 100/7
+            print("Progress Bar is updating")
+            self.progressBar.setValue(count)
+            
+            
+            modules.append(ML.catBoostR(self.path,self.pstr))
+            count += 100/7
+            print("Progress Bar is updating")
+            self.progressBar.setValue(count)
+            
         elif(currModel == 1):
-            modules = [ML.logisticRegression(self.path),ML.kNearestNeighbors(self.path),ML.supportVectorMachine(self.path),ML.kernelSupportVectorMachine(self.path),ML.naiveBayes(self.path),ML.decisionTreeClassification(self.path),ML.randomForestClassification(self.path),ML.xgBoostC(self.path),ML.catBoostC(self.path)]
+            
+            modules.append(ML.logisticRegression(self.path))
+            count += 100/9
+            print("Progress Bar is updating")
+            self.progressBar.setValue(count)
+           
+            modules.append(ML.kNearestNeighbors(self.path))
+            count += 100/9
+            print("Progress Bar is updating")
+            self.progressBar.setValue(count)
+           
+            modules.append(ML.supportVectorMachine(self.path))
+            count += 100/9
+            print("Progress Bar is updating")
+            self.progressBar.setValue(count)
+           
+            modules.append(ML.kernelSupportVectorMachine(self.path))
+            count += 100/9
+            print("Progress Bar is updating")
+            self.progressBar.setValue(count)
+           
+            modules.append(ML.naiveBayes(self.path))
+            count += 100/9
+            print("Progress Bar is updating")
+            self.progressBar.setValue(count)
+           
+            modules.append(ML.decisionTreeClassification(self.path))
+            count += 100/9
+            print("Progress Bar is updating")
+            self.progressBar.setValue(count)
+           
+            modules.append(ML.randomForestClassification(self.path))
+            count += 100/9
+            print("Progress Bar is updating")
+            self.progressBar.setValue(count)
+           
+            modules.append(ML.xgBoostC(self.path))
+            count += 100/9
+            print("Progress Bar is updating")
+            self.progressBar.setValue(count)
+           
+            modules.append(ML.catBoostC(self.path))
+            count += 100/9
+            print("Progress Bar is updating")
+            self.progressBar.setValue(count)
+           
+
         elif(currModel == 2):
-            modules = [ML.k_MeansClustering(self.path),ML.hierarchicalClustering(self.path)]
+            
+            modules.append(ML.k_MeansClustering(self.path))
+            count += 100/2
+            print("Progress Bar is updating")
+            self.progressBar.setValue(count)
+            modules.append(ML.hierarchicalClustering(self.path))
+            count += 100/2
+            print("Progress Bar is updating")
+            self.progressBar.setValue(count)
+        
         elif(currModel == 3):
-            modules = [ML.apriori(self.path),ML.eclat(self.path)]
+            
+            modules.append(ML.apriori(self.path))
+            count += 100/2
+            print("Progress Bar is updating")
+            self.progressBar.setValue(count)
+            modules.append(ML.eclat(self.path))
+            count += 100/2
+            print("Progress Bar is updating")
+            self.progressBar.setValue(count)
+
         elif(currModel == 4):
-            modules = [ML.upperConfidenceBound(self.path),ML.thompsonSampling(self.path)]
+
+            modules.append(ML.upperConfidenceBound(self.path))
+            count += 100/2
+            print("Progress Bar is updating")
+            self.progressBar.setValue(count)
+
+            modules.append(ML.thompsonSampling(self.path))
+            count += 100/2
+            print("Progress Bar is updating")
+            self.progressBar.setValue(count)
+
+        
         elif(currModel == 5):
-            modules = [ML.bagOfWordsNB(self.path),ML.bagOfWordsLR(self.path),ML.bagOfWordsKNN(self.path),ML.bagOfWordsSVM(self.path),ML.bagOfWordsKSVM(self.path),ML.bagOfWordsDTC(self.path),ML.bagOfWordsRFC(self.path),ML.bagOfWordsXGB(self.path)]
+
+            modules.append(ML.bagOfWordsNB(self.path))
+            count += 100/8
+            print("Progress Bar is updating")
+            self.progressBar.setValue(count)
+
+            modules.append(ML.bagOfWordsLR(self.path))
+            count += 100/8
+            print("Progress Bar is updating")
+            self.progressBar.setValue(count)
+
+            modules.append(ML.bagOfWordsKNN(self.path))
+            count += 100/8
+            print("Progress Bar is updating")
+            self.progressBar.setValue(count)
+
+            modules.append(ML.bagOfWordsSVM(self.path))
+            count += 100/8
+            print("Progress Bar is updating")
+            self.progressBar.setValue(count)
+
+            modules.append(ML.bagOfWordsKSVM(self.path))
+            count += 100/8
+            print("Progress Bar is updating")
+            self.progressBar.setValue(count)
+
+            modules.append(ML.bagOfWordsDTC(self.path))
+            count += 100/8
+            print("Progress Bar is updating")
+            self.progressBar.setValue(count)
+
+            modules.append(ML.bagOfWordsRFC(self.path))
+            count += 100/8
+            print("Progress Bar is updating")
+            self.progressBar.setValue(count)
+
+            modules.append(ML.bagOfWordsXGB(self.path))
+            count += 100/8
+            print("Progress Bar is updating")
+            self.progressBar.setValue(count)
+
+
         elif(currModel == 6):
-            modules = [ML.artificialNeuralNetwork(self.path)]
+
+            modules.append(ML.artificialNeuralNetwork(self.path))
+            self.progressBar.setValue(100)
+
         elif(currModel == 7):
-            modules = [ML.convolutionalNeuralNetwork(self.path)]
+
+            modules.append(ML.convolutionalNeuralNetwork(self.path))
+            self.progressBar.setValue(100)
+        
         else:
+        
             print("error: Selected Model Doesn't exist")
         #for func in modules[selectedModel]:
+
         print(modules,currModel)
+       
         for func in modules:
+            
             if(currModel == 0):
                 score = func
-                print(score[1])
+                #print(score)
+                
                 scores.append(score[1].real)
                 scoresstr = [str(x) for x in scores]
-                self.scores.setText(" ".join(scoresstr))
-
+                self.stri+="\n RMSE: "+" ".join(scoresstr)+"\nPrediction Results : "+str(score[-1][0])
+                self.scores.setText(self.stri)
+                
             elif(currModel == 1):
                 score = func
                 print(score)
                 scores.append(score)
                 scoresstr = [str(x) for x in scores]
-                self.scores.setText(" ".join(scoresstr))
+                self.scores.setText(self.stri+"\n"+" ".join(scoresstr))
 
             elif(currModel == 2):
                 score = func
                 print(score)
                 scores.append(max(score))
                 scoresstr = [str(x) for x in scores]
-                self.scores.setText(" ".join(scoresstr))
+                self.scores.setText(self.stri+"\n"+" ".join(scoresstr))
 
             elif(currModel == 3):
                 score = func
                 print(score)
                 scores.append(score)
                 scorestr = [str(x) for x in scores]
-                self.scores.setText('\n'.join(scorestr))
+                self.scores.setText(self.stri+"\n"+'\n'.join(scorestr))
             
             elif(currModel == 4):
                 score = func
                 print(score)
                 scores.append(score)
                 scorestr = [str(x) for x in scores]
-                self.scores.setText('\n'.join(scorestr))
+                self.scores.setText(self.stri+"\n"+'\n'.join(scorestr))
 
             elif(currModel == 5):
                 score = func
                 print(score)
                 scores.append(score)
                 scoresstr = [str(x) for x in scores]
-                self.scores.setText(" ".join(scoresstr))
+                self.scores.setText(self.stri+"\n"+" ".join(scoresstr))
 
         import matplotlib.pyplot as plt; plt.rcdefaults()
         import numpy as np
@@ -304,11 +501,6 @@ class datasetUI(QDialog):
 
         plt.show()
         print(scores)
-
-
-
-        
-
 
 
 app = QApplication(sys.argv)
