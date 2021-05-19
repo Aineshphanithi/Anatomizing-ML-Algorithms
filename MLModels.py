@@ -1344,7 +1344,7 @@ class clustering:
         import matplotlib.pyplot as plt
         import pandas as pd
         
-    def k_MeansClustering(self,dir):
+    def k_MeansClustering(self,dir,pstr):
         # Importing the dataset
         import numpy as np
         import matplotlib.pyplot as plt
@@ -1353,29 +1353,37 @@ class clustering:
         #from sklearn.metrics import silhouette_score
         
         dataset = pd.read_csv(dir)
-        X = dataset.iloc[:, :-1].values
-        y = dataset.iloc[:, -1].values
-
+        X = dataset.iloc[:].values
+        #y = dataset.iloc[:, -1].values
+        pstr = pd.DataFrame(pstr)
+        pstr = pstr.iloc[:].values
+        print(X,pstr)
         stridx = []
         for x in range(0, len(X[0])):
             if isinstance(X[0][x], str):
                 stridx.append(x)
+        if(len(pstr[0])!=0):
+            X = np.vstack((X,pstr))
+        print(X)
         
         # removing the string from independent variable
         from sklearn.compose import ColumnTransformer
         from sklearn.preprocessing import OneHotEncoder
-        
+
         for i in stridx:
             ct = ColumnTransformer(transformers=[('encoder', OneHotEncoder(), [i])], remainder='passthrough')
             X = np.array(ct.fit_transform(X))
-            print(X)
         
-        from sklearn.preprocessing import LabelEncoder
-        if isinstance(y[0], str):
-            # removing the string from dependent variable
-            le = LabelEncoder()
-            y = le.fit_transform(y)
+        # from sklearn.preprocessing import LabelEncoder
+        # if isinstance(y[0], str):
+        #     # removing the string from dependent variable
+        #     le = LabelEncoder()
+        #     y = le.fit_transform(y)
         # Using the elbow method to find the optimal number of clusters
+        
+        if(len(pstr[0])!=0):
+            pstr = [X[-1]]
+            X = X[0:-1]
         from sklearn.cluster import KMeans
         # wcss = []
         # for i in range(1, 11):
@@ -1385,31 +1393,38 @@ class clustering:
 
         # V Measure
         v_scores = []
-        for i in range(1,11):
-            kmeans = KMeans(n_clusters = i, init = 'k-means++', random_state = 42)
-            kmeans.fit(X)
-            y_pred = kmeans.fit_predict(X)
-            v_scores.append(v_measure_score(y, y_pred))
+        # print(X[0],X[-1])
+        # for i in range(1,11):
+        #     kmeans = KMeans(n_clusters = i, init = 'k-means++', random_state = 42)
+        #     kmeans.fit(X)
+        #     y_pred = kmeans.fit_predict(X)
+        #     v_scores.append(v_measure_score(y, y_pred))
 
         # plt.plot(range(1, 11), wcss)
         # plt.title('The Elbow Method')
         # plt.xlabel('Number of clusters')
         # plt.ylabel('WCSS')
         # plt.show()
-        bestC = v_scores.index(max(v_scores))
-        plt.plot(range(1, 11), v_scores)
-        plt.title('V Measure')
-        plt.xlabel('Number of clusters')
-        plt.ylabel('score')
+        # bestC = v_scores.index(max(v_scores))
+        # plt.plot(range(1, 11), v_scores)
+        # plt.title('V Measure')
+        # plt.xlabel('Number of clusters')
+        # plt.ylabel('score')
         #plt.show()
 
         # Training the K-Means model on the dataset
-        kmeans = KMeans(n_clusters = bestC, init = 'k-means++', random_state = 42)
+        kmeans = KMeans(n_clusters = 5, init = 'k-means++', random_state = 42)
         y_pred = kmeans.fit_predict(X)
+        print(X)
+        print(pstr)
+        if(len(pstr[0])!=0):
+            cstpred = kmeans.fit_predict(pstr)
+        else:
+            cstpred = [-999]
         print(y_pred)
-        return v_scores
+        return [v_scores,cstpred]
 
-    def hierarchicalClustering(self,dir):
+    def hierarchicalClustering(self,dir,pstr):
         
         # Importing the dataset
         import numpy as np
@@ -1418,14 +1433,18 @@ class clustering:
         from sklearn.metrics import v_measure_score
 
         dataset = pd.read_csv(dir)
-        X = dataset.iloc[:, :-1].values
-        y = dataset.iloc[:, -1].values
+        X = dataset.iloc[:].values
+        #y = dataset.iloc[:, -1].values
+        
+        # X = dataset.iloc[:, :-1].values
+        # y = dataset.iloc[:, -1].values
 
         stridx = []
         for x in range(0, len(X[0])):
             if isinstance(X[0][x], str):
                 stridx.append(x)
-        
+        if(len(pstr[0])!=0):
+            X = np.vstack((X,np.array(pstr[0])))
         # removing the string from independent variable
         from sklearn.compose import ColumnTransformer
         from sklearn.preprocessing import OneHotEncoder
@@ -1435,42 +1454,48 @@ class clustering:
             X = np.array(ct.fit_transform(X))
             print(X)
         
-        from sklearn.preprocessing import LabelEncoder
-        if isinstance(y[0], str):
-            # removing the string from dependent variable
-            le = LabelEncoder()
-            y = le.fit_transform(y)
+        if(len(pstr[0])!=0):
+            pstr = [X[-1]]
+            X = X[0:-1]
+        # from sklearn.preprocessing import LabelEncoder
+        # if isinstance(y[0], str):
+        #     # removing the string from dependent variable
+        #     le = LabelEncoder()
+        #     y = le.fit_transform(y)
         
         
         #WARNING for huge data it will get error
         # Using the dendrogram to find the optimal number of clusters
-        # import scipy.cluster.hierarchy as sch
-        # dendrogram = sch.dendrogram(sch.linkage(X, method = 'ward'))
-        # plt.title('Dendrogram')
-        # plt.xlabel('Customers')
-        # plt.ylabel('Euclidean distances')
-        # plt.show()
+        import scipy.cluster.hierarchy as sch
+        dendrogram = sch.dendrogram(sch.linkage(X, method = 'ward'))
+        plt.title('Dendrogram')
+        plt.xlabel('Customers')
+        plt.ylabel('Euclidean distances')
+        plt.show()
         
         # Training the Hierarchical Clustering model on the dataset
         from sklearn.cluster import AgglomerativeClustering
         v_scores = []
-        for i in range(1,11):
-            hc = AgglomerativeClustering(n_clusters = i, affinity = 'euclidean', linkage = 'ward')
-            y_pred = hc.fit_predict(X)
+        # for i in range(1,11):
+        #     hc = AgglomerativeClustering(n_clusters = i, affinity = 'euclidean', linkage = 'ward')
+        #     y_pred = hc.fit_predict(X)
            
-            v_scores.append(v_measure_score(y, y_pred))
+        #     v_scores.append(v_measure_score(y, y_pred))
         
-        bestC = v_scores.index(max(v_scores))
-        plt.plot(range(1, 11), v_scores)
-        plt.title('V Measure')
-        plt.xlabel('Number of clusters')
-        plt.ylabel('score')
-        #plt.show()
+        # bestC = v_scores.index(max(v_scores))
+        # plt.plot(range(1, 11), v_scores)
+        # plt.title('V Measure')
+        # plt.xlabel('Number of clusters')
+        # plt.ylabel('score')
+        # plt.show()
 
-        hc = AgglomerativeClustering(n_clusters = bestC, affinity = 'euclidean', linkage = 'ward')
+        hc = AgglomerativeClustering(n_clusters = 5, affinity = 'euclidean', linkage = 'ward')
         y_pred = hc.fit_predict(X)
-        
-        return v_scores
+        if(len(pstr[0])!=0):
+            cstpred = hc.fit_predict(pstr)
+        else:
+            cstpred = [-999]
+        return [v_scores,cstpred]
         
 class associationRuleLearning:
     def __init__(self):

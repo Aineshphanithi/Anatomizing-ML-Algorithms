@@ -315,11 +315,11 @@ class datasetUI(QDialog, QThread):
 
         elif(currModel == 2):
             
-            modules.append(ML.k_MeansClustering(self.path))
+            modules.append(ML.k_MeansClustering(self.path,self.pstr))
             count += 100/2
             print("Progress Bar is updating")
             self.progressBar.setValue(count)
-            modules.append(ML.hierarchicalClustering(self.path))
+            modules.append(ML.hierarchicalClustering(self.path,self.pstr))
             count += 100/2
             print("Progress Bar is updating")
             self.progressBar.setValue(count)
@@ -436,9 +436,13 @@ class datasetUI(QDialog, QThread):
             elif(currModel == 2):
                 score = func
                 print(score)
-                scores.append(max(score))
+                scores.append(score[0])
                 scoresstr = [str(x) for x in scores]
-                self.scores.setText(self.stri+"\n"+" ".join(scoresstr))
+                if(score[1][0]!=-999):
+                    self.stri+="\n RMSE: "+" ".join(scoresstr)+"\nPrediction Results : "+str(score[1][0])
+                else:
+                    self.stri+="\n RMSE: "+" ".join(scoresstr)
+                self.scores.setText(self.stri)
 
             elif(currModel == 3):
                 score = func
@@ -485,10 +489,11 @@ class datasetUI(QDialog, QThread):
             objects = ('K_Means Clustering','Hierarchical Clustering')
             y_pos = np.arange(len(objects))
             performance = scores
-            plt.bar(y_pos, performance, align='center', alpha=0.5)
-            plt.xticks(y_pos, objects)
-            plt.ylabel('v-Score')
-            plt.title('Clustering Models  v_Scores')
+            print("In plot : ", performance)
+            # plt.bar(y_pos, performance, align='center', alpha=0.5)
+            # plt.xticks(y_pos, objects)
+            # plt.ylabel('v-Score')
+            # plt.title('Clustering Models  v_Scores')
         elif(currModel == 4):
             # objects = ('K_Means Clustering','Hierarchical Clustering')
             # y_pos = np.arange(len(objects))
