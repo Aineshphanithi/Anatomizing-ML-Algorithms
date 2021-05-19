@@ -475,6 +475,7 @@ class datasetUI(QDialog, QThread):
             performance = scores
             plt.bar(y_pos, performance, align='center', alpha=0.5)
             plt.xticks(y_pos, objects)
+            plt.xticks(rotation=25)
             plt.ylabel('RMSE')
             plt.title('Regression Models RMSE value')
         elif(currModel == 1):
@@ -483,6 +484,7 @@ class datasetUI(QDialog, QThread):
             performance = scores
             plt.bar(y_pos, performance, align='center', alpha=0.5)
             plt.xticks(y_pos, objects)
+            plt.xticks(rotation=25)
             plt.ylabel('Accuracy Score')
             plt.title('Classification Models Accuracy Scores')
         elif(currModel == 2):
@@ -508,6 +510,7 @@ class datasetUI(QDialog, QThread):
             performance = scores
             plt.bar(y_pos, performance, align='center', alpha=0.5)
             plt.xticks(y_pos, objects)
+            plt.xticks(rotation=25)
             plt.ylabel('Accuracy')
             plt.title('Natural Language Processing Using Classification')
 
