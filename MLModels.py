@@ -1519,7 +1519,7 @@ class associationRuleLearning:
         import matplotlib.pyplot as plt
         import pandas as pd
         
-    def apriori(self,dir):
+    def apriori(self,dir,pstr):
         import numpy as np
         import matplotlib.pyplot as plt
         import pandas as pd
@@ -1556,10 +1556,17 @@ class associationRuleLearning:
         ## Displaying the results sorted by descending lifts
         result = resultsinDataFrame.nlargest(n = 10, columns = 'Lift')
         print(result)
-        return result
+        #print(pstr[0][0],resultsinDataFrame['Right Hand Side'].where(resultsinDataFrame['Left Hand Side'] == 'pasta'))
+        if(len(pstr[0]) == 0):
+            prdres1 = -999
+            prdres2 = -999
+        else:
+            prdres1 = resultsinDataFrame['Right Hand Side'].where(resultsinDataFrame['Left Hand Side'] == pstr[0][0])
+            prdres2 = "Lift: \n"+str(resultsinDataFrame['Lift'].where(resultsinDataFrame['Left Hand Side'] == pstr[0][0]))
 
+        return [result,prdres1,prdres2]
 
-    def eclat(self,dir):
+    def eclat(self,dir,pstr):
         import numpy as np
         import matplotlib.pyplot as plt
         import pandas as pd
@@ -1593,7 +1600,14 @@ class associationRuleLearning:
         ## Displaying the results sorted by descending supports
         result = resultsinDataFrame.nlargest(n = 10, columns = 'Support')
         print(result)
-        return result
+        if(len(pstr[0]) == 0):
+            prdres1 = -999
+            prdres2 = -999
+        else:
+            prdres1 = resultsinDataFrame['Product 2'].where(resultsinDataFrame['Product 1'] == pstr[0][0])
+            prdres2 = "Support : \n"+str(resultsinDataFrame['Support'].where(resultsinDataFrame['Product 1'] == pstr[0][0]))
+
+        return [result,prdres1,prdres2]
         
 class reinforcementLearning:
     def __init__(self):
@@ -1737,13 +1751,13 @@ class naturalLanguageProcessing:
         import matplotlib.pyplot as plt
         import pandas as pd
     
-    def bagOfWordsNB(self,dir):
+    def bagOfWordsNB(self,dir,pstr):
         import numpy as np
         import matplotlib.pyplot as plt
         import pandas as pd
         # Importing the dataset
         dataset = pd.read_csv(dir, delimiter = '\t', quoting = 3)
-        
+        #print(type(dataset))
         # Cleaning the texts
         import re
         import nltk
@@ -1761,13 +1775,31 @@ class naturalLanguageProcessing:
           review = [ps.stem(word) for word in review if not word in set(all_stopwords)]
           review = ' '.join(review)
           corpus.append(review)
-        print(corpus)
         
+        if(len(pstr[0])!=0):
+            prediction = []
+            review = re.sub('[^a-zA-Z]', ' ', pstr[0][0])
+            review = review.lower()
+            review = review.split()
+            ps = PorterStemmer()
+            all_stopwords = stopwords.words('english')
+            all_stopwords.remove('not')
+            review = [ps.stem(word) for word in review if not word in set(all_stopwords)]
+            review = ' '.join(review)
+            prediction.append(review)
+            #print(corpus,prediction)
+        corpus.extend(prediction)
+        print(corpus)
         # Creating the Bag of Words model
         from sklearn.feature_extraction.text import CountVectorizer
         cv = CountVectorizer(max_features = 1500)
         X = cv.fit_transform(corpus).toarray()
+        if(len(pstr[0])!=0):
+            pstr = [X[-1]]
+            X=X[0:-1]
+            #pstr = cv.fit_transform(prediction).toarray()
         y = dataset.iloc[:, -1].values
+        print(X,pstr)
         
         # Splitting the dataset into the Training set and Test set
         from sklearn.model_selection import train_test_split
@@ -1780,16 +1812,23 @@ class naturalLanguageProcessing:
         
         # Predicting the Test set results
         y_pred = classifier.predict(X_test)
-        print(np.concatenate((y_pred.reshape(len(y_pred),1), y_test.reshape(len(y_test),1)),1))
+        
+        print(type(X_test),X_test)
+        print(type(pstr),pstr)
+        if(len(pstr[0])!=0):
+            pstr = classifier.predict(pstr)
+        else:
+            pstr = [-999]
+        #print(np.concatenate((y_pred.reshape(len(y_pred),1), y_test.reshape(len(y_test),1)),1))
         
         # Making the Confusion Matrix
         from sklearn.metrics import confusion_matrix, accuracy_score
         cm = confusion_matrix(y_test, y_pred)
         print(cm)
-        return accuracy_score(y_test, y_pred)
+        return [accuracy_score(y_test, y_pred),pstr]
         
         
-    def bagOfWordsLR(self,dir):
+    def bagOfWordsLR(self,dir,pstr):
         import numpy as np
         import matplotlib.pyplot as plt
         import pandas as pd  
@@ -1814,11 +1853,26 @@ class naturalLanguageProcessing:
           review = ' '.join(review)
           corpus.append(review)
         print(corpus)
-        
+        if(len(pstr[0])!=0):
+            prediction = []
+            review = re.sub('[^a-zA-Z]', ' ', pstr[0][0])
+            review = review.lower()
+            review = review.split()
+            ps = PorterStemmer()
+            all_stopwords = stopwords.words('english')
+            all_stopwords.remove('not')
+            review = [ps.stem(word) for word in review if not word in set(all_stopwords)]
+            review = ' '.join(review)
+            prediction.append(review)
+            print(corpus,prediction)
+        corpus.extend(prediction)
         # Creating the Bag of Words model
         from sklearn.feature_extraction.text import CountVectorizer
         cv = CountVectorizer(max_features = 1500)
         X = cv.fit_transform(corpus).toarray()
+        if(len(pstr[0])!=0):
+            pstr = [X[-1]]
+            X=X[0:-1]
         y = dataset.iloc[:, -1].values
         
         # Splitting the dataset into the Training set and Test set
@@ -1832,15 +1886,18 @@ class naturalLanguageProcessing:
         
         # Predicting the Test set results
         y_pred = classifier.predict(X_test)
-        print(np.concatenate((y_pred.reshape(len(y_pred),1), y_test.reshape(len(y_test),1)),1))
-        
+        #print(np.concatenate((y_pred.reshape(len(y_pred),1), y_test.reshape(len(y_test),1)),1))
+        if(len(pstr[0])!=0):
+            pstr = classifier.predict(pstr)
+        else:
+            pstr = [-999]
         # Making the Confusion Matrix
         from sklearn.metrics import confusion_matrix, accuracy_score
         cm = confusion_matrix(y_test, y_pred)
         print(cm)
-        return accuracy_score(y_test, y_pred)
+        return [accuracy_score(y_test, y_pred),pstr]
     
-    def bagOfWordsKNN(self,dir):
+    def bagOfWordsKNN(self,dir,pstr):
         import numpy as np
         import matplotlib.pyplot as plt
         import pandas as pd     
@@ -1865,11 +1922,26 @@ class naturalLanguageProcessing:
           review = ' '.join(review)
           corpus.append(review)
         print(corpus)
-        
+        if(len(pstr[0])!=0):
+            prediction = []
+            review = re.sub('[^a-zA-Z]', ' ', pstr[0][0])
+            review = review.lower()
+            review = review.split()
+            ps = PorterStemmer()
+            all_stopwords = stopwords.words('english')
+            all_stopwords.remove('not')
+            review = [ps.stem(word) for word in review if not word in set(all_stopwords)]
+            review = ' '.join(review)
+            prediction.append(review)
+            print(corpus,prediction)
         # Creating the Bag of Words model
+        corpus.extend(prediction)
         from sklearn.feature_extraction.text import CountVectorizer
         cv = CountVectorizer(max_features = 1500)
         X = cv.fit_transform(corpus).toarray()
+        if(len(pstr[0])!=0):
+            pstr = [X[-1]]
+            X=X[0:-1]
         y = dataset.iloc[:, -1].values
         
         # Splitting the dataset into the Training set and Test set
@@ -1885,15 +1957,19 @@ class naturalLanguageProcessing:
         
         # Predicting the Test set results
         y_pred = classifier.predict(X_test)
-        print(np.concatenate((y_pred.reshape(len(y_pred),1), y_test.reshape(len(y_test),1)),1))
+        if(len(pstr[0])!=0):
+            pstr = classifier.predict(pstr)
+        else:
+            pstr = [-999]
+        #print(np.concatenate((y_pred.reshape(len(y_pred),1), y_test.reshape(len(y_test),1)),1))
         
         # Making the Confusion Matrix
         from sklearn.metrics import confusion_matrix, accuracy_score
         cm = confusion_matrix(y_test, y_pred)
         print(cm)
-        return accuracy_score(y_test, y_pred)
+        return [accuracy_score(y_test, y_pred),pstr]
         
-    def bagOfWordsSVM(self,dir):
+    def bagOfWordsSVM(self,dir,pstr):
         import numpy as np
         import matplotlib.pyplot as plt
         import pandas as pd        
@@ -1918,11 +1994,26 @@ class naturalLanguageProcessing:
           review = ' '.join(review)
           corpus.append(review)
         print(corpus)
-        
+        if(len(pstr[0])!=0):
+            prediction = []
+            review = re.sub('[^a-zA-Z]', ' ', pstr[0][0])
+            review = review.lower()
+            review = review.split()
+            ps = PorterStemmer()
+            all_stopwords = stopwords.words('english')
+            all_stopwords.remove('not')
+            review = [ps.stem(word) for word in review if not word in set(all_stopwords)]
+            review = ' '.join(review)
+            prediction.append(review)
+            print(corpus,prediction)
+        corpus.extend(prediction)
         # Creating the Bag of Words model
         from sklearn.feature_extraction.text import CountVectorizer
         cv = CountVectorizer(max_features = 1500)
         X = cv.fit_transform(corpus).toarray()
+        if(len(pstr[0])!=0):
+            pstr = [X[-1]]
+            X=X[0:-1]
         y = dataset.iloc[:, -1].values
         
         # Splitting the dataset into the Training set and Test set
@@ -1940,15 +2031,18 @@ class naturalLanguageProcessing:
         
         # Predicting the Test set results
         y_pred = classifier.predict(X_test)
-        print(np.concatenate((y_pred.reshape(len(y_pred),1), y_test.reshape(len(y_test),1)),1))
-        
+        #print(np.concatenate((y_pred.reshape(len(y_pred),1), y_test.reshape(len(y_test),1)),1))
+        if(len(pstr[0])!=0):
+            pstr = classifier.predict(pstr)
+        else:
+            pstr = [-999]
         # Making the Confusion Matrix
         from sklearn.metrics import confusion_matrix, accuracy_score
         cm = confusion_matrix(y_test, y_pred)
         print(cm)
-        return accuracy_score(y_test, y_pred)
+        return [accuracy_score(y_test, y_pred),pstr]
         
-    def bagOfWordsKSVM(self,dir):
+    def bagOfWordsKSVM(self,dir,pstr):
         import numpy as np
         import matplotlib.pyplot as plt
         import pandas as pd        
@@ -1973,11 +2067,27 @@ class naturalLanguageProcessing:
           review = ' '.join(review)
           corpus.append(review)
         print(corpus)
-        
+        if(len(pstr[0])!=0):
+            prediction = []
+            review = re.sub('[^a-zA-Z]', ' ', pstr[0][0])
+            review = review.lower()
+            review = review.split()
+            ps = PorterStemmer()
+            all_stopwords = stopwords.words('english')
+            all_stopwords.remove('not')
+            review = [ps.stem(word) for word in review if not word in set(all_stopwords)]
+            review = ' '.join(review)
+            prediction.append(review)
+            print(corpus,prediction)
+        corpus.extend(prediction)
         # Creating the Bag of Words model
+
         from sklearn.feature_extraction.text import CountVectorizer
         cv = CountVectorizer(max_features = 1500)
         X = cv.fit_transform(corpus).toarray()
+        if(len(pstr[0])!=0):
+            pstr = [X[-1]]
+            X=X[0:-1]
         y = dataset.iloc[:, -1].values
         
         # Splitting the dataset into the Training set and Test set
@@ -1996,15 +2106,18 @@ class naturalLanguageProcessing:
         
         # Predicting the Test set results
         y_pred = classifier.predict(X_test)
-        print(np.concatenate((y_pred.reshape(len(y_pred),1), y_test.reshape(len(y_test),1)),1))
-        
+        #print(np.concatenate((y_pred.reshape(len(y_pred),1), y_test.reshape(len(y_test),1)),1))
+        if(len(pstr[0])!=0):
+            pstr = classifier.predict(pstr)
+        else:
+            pstr = [-999]
         # Making the Confusion Matrix
         from sklearn.metrics import confusion_matrix, accuracy_score
         cm = confusion_matrix(y_test, y_pred)
         print(cm)
-        return accuracy_score(y_test, y_pred)
+        return [accuracy_score(y_test, y_pred),pstr]
 
-    def bagOfWordsDTC(self,dir):
+    def bagOfWordsDTC(self,dir,pstr):
         import numpy as np
         import matplotlib.pyplot as plt
         import pandas as pd        
@@ -2029,11 +2142,26 @@ class naturalLanguageProcessing:
           review = ' '.join(review)
           corpus.append(review)
         print(corpus)
-        
+        if(len(pstr[0])!=0):
+            prediction = []
+            review = re.sub('[^a-zA-Z]', ' ', pstr[0][0])
+            review = review.lower()
+            review = review.split()
+            ps = PorterStemmer()
+            all_stopwords = stopwords.words('english')
+            all_stopwords.remove('not')
+            review = [ps.stem(word) for word in review if not word in set(all_stopwords)]
+            review = ' '.join(review)
+            prediction.append(review)
+            print(corpus,prediction)
+        corpus.extend(prediction)
         # Creating the Bag of Words model
         from sklearn.feature_extraction.text import CountVectorizer
         cv = CountVectorizer(max_features = 1500)
         X = cv.fit_transform(corpus).toarray()
+        if(len(pstr[0])!=0):
+            pstr = [X[-1]]
+            X=X[0:-1]
         y = dataset.iloc[:, -1].values
         
         # Splitting the dataset into the Training set and Test set
@@ -2052,15 +2180,19 @@ class naturalLanguageProcessing:
         
         # Predicting the Test set results
         y_pred = classifier.predict(X_test)
-        print(np.concatenate((y_pred.reshape(len(y_pred),1), y_test.reshape(len(y_test),1)),1))
+        if(len(pstr[0])!=0):
+            pstr = classifier.predict(pstr)
+        else:
+            pstr = [-999]
+        #print(np.concatenate((y_pred.reshape(len(y_pred),1), y_test.reshape(len(y_test),1)),1))
         
         # Making the Confusion Matrix
         from sklearn.metrics import confusion_matrix, accuracy_score
         cm = confusion_matrix(y_test, y_pred)
         print(cm)
-        return accuracy_score(y_test, y_pred)
+        return [accuracy_score(y_test, y_pred),pstr]
         
-    def bagOfWordsRFC(self,dir):
+    def bagOfWordsRFC(self,dir,pstr):
         import numpy as np
         import matplotlib.pyplot as plt
         import pandas as pd        
@@ -2085,11 +2217,26 @@ class naturalLanguageProcessing:
           review = ' '.join(review)
           corpus.append(review)
         print(corpus)
-        
+        if(len(pstr[0])!=0):
+            prediction = []
+            review = re.sub('[^a-zA-Z]', ' ', pstr[0][0])
+            review = review.lower()
+            review = review.split()
+            ps = PorterStemmer()
+            all_stopwords = stopwords.words('english')
+            all_stopwords.remove('not')
+            review = [ps.stem(word) for word in review if not word in set(all_stopwords)]
+            review = ' '.join(review)
+            prediction.append(review)
+            print(corpus,prediction)
+        corpus.extend(prediction)
         # Creating the Bag of Words model
         from sklearn.feature_extraction.text import CountVectorizer
         cv = CountVectorizer(max_features = 1500)
         X = cv.fit_transform(corpus).toarray()
+        if(len(pstr[0])!=0):
+            pstr = [X[-1]]
+            X=X[0:-1]
         y = dataset.iloc[:, -1].values
         
         # Splitting the dataset into the Training set and Test set
@@ -2105,16 +2252,19 @@ class naturalLanguageProcessing:
         
         # Predicting the Test set results
         y_pred = classifier.predict(X_test)
-        print(np.concatenate((y_pred.reshape(len(y_pred),1), y_test.reshape(len(y_test),1)),1))
+        if(len(pstr[0])!=0):
+            pstr = classifier.predict(pstr)
+        else:
+            pstr = [-999]
+        #print(np.concatenate((y_pred.reshape(len(y_pred),1), y_test.reshape(len(y_test),1)),1))
         
         # Making the Confusion Matrix
         from sklearn.metrics import confusion_matrix, accuracy_score
         cm = confusion_matrix(y_test, y_pred)
         print(cm)
-        return accuracy_score(y_test, y_pred)
+        return [accuracy_score(y_test, y_pred),pstr]
         
-        
-    def bagOfWordsXGB(self,dir):
+    def bagOfWordsXGB(self,dir,pstr):
         import numpy as np
         import matplotlib.pyplot as plt
         import pandas as pd        
@@ -2139,11 +2289,27 @@ class naturalLanguageProcessing:
           review = ' '.join(review)
           corpus.append(review)
         print(corpus)
-        
+        if(len(pstr[0])!=0):
+            prediction = []
+            review = re.sub('[^a-zA-Z]', ' ', pstr[0][0])
+            review = review.lower()
+            review = review.split()
+            ps = PorterStemmer()
+            all_stopwords = stopwords.words('english')
+            all_stopwords.remove('not')
+            review = [ps.stem(word) for word in review if not word in set(all_stopwords)]
+            review = ' '.join(review)
+            prediction.append(review)
+            print(corpus,prediction)
+        corpus.extend(prediction)
         # Creating the Bag of Words model
         from sklearn.feature_extraction.text import CountVectorizer
         cv = CountVectorizer(max_features = 1500)
         X = cv.fit_transform(corpus).toarray()
+        if(len(pstr[0])!=0):
+            pstr = [X[-1]]
+            X=X[0:-1]
+        
         y = dataset.iloc[:, -1].values
         
         # Splitting the dataset into the Training set and Test set
@@ -2159,13 +2325,17 @@ class naturalLanguageProcessing:
         
         # Predicting the Test set results
         y_pred = classifier.predict(X_test)
+        if(len(pstr[0])!=0):
+            pstr = classifier.predict(pstr)
+        else:
+            pstr = [-999]
         print(np.concatenate((y_pred.reshape(len(y_pred),1), y_test.reshape(len(y_test),1)),1))
         
         # Making the Confusion Matrix
         from sklearn.metrics import confusion_matrix, accuracy_score
         cm = confusion_matrix(y_test, y_pred)
         print(cm)
-        return accuracy_score(y_test, y_pred)
+        return [accuracy_score(y_test, y_pred),pstr]
         
 class deepLearning:
     def __init__(self):
@@ -2174,44 +2344,65 @@ class deepLearning:
         import matplotlib.pyplot as plt
         import pandas as pd
     
-    def artificialNeuralNetwork(self,dir):
+    def artificialNeuralNetwork(self,dir,pstr):
         import numpy as np
         import pandas as pd
         import tensorflow as tf
         tf.__version__
         
-        # Part 1 - Data Preprocessing
-        
-        # Importing the dataset
+
         dataset = pd.read_csv(dir)
-        X = dataset.iloc[:, 3:-1].values
-        y = dataset.iloc[:, -1].values
-        print(X)
-        print(y)
+        if(len(pstr[0])!=0):   
+            pstr[0].append(0)
+            dataset.loc[len(dataset)] = pstr[0]
+        X = dataset.iloc[:,:-1].values
         
-        # Encoding categorical data
-        # Label Encoding the "Gender" column
+        print("first")
+        print(X)
+        print(pstr)
+        
+        print("second")
+        print(X)
+        
+        print(pstr)
+        X = X[:, 3:-1]
+        if(len(pstr[0])!=0):
+            y = dataset.iloc[:-1, -1].values
+        else:
+            y = dataset.iloc[:,-1].values
+        print("third")
+        print(X)
+      
+        print(pstr)
+
         from sklearn.preprocessing import LabelEncoder
         le = LabelEncoder()
         X[:, 2] = le.fit_transform(X[:, 2])
-        print(X)
-        # One Hot Encoding the "Geography" column
+
         from sklearn.compose import ColumnTransformer
         from sklearn.preprocessing import OneHotEncoder
         ct = ColumnTransformer(transformers=[('encoder', OneHotEncoder(), [1])], remainder='passthrough')
         X = np.array(ct.fit_transform(X))
+
+        print(X,pstr)
+        if(len(pstr[0])!=0):
+            pstr = np.array([X[-1]])
+            X = X[0:-1]
+        print("fourth")
         print(X)
-        print(len(X[0]))
-        # Splitting the dataset into the Training set and Test set
+      
+        print(pstr)
+
         from sklearn.model_selection import train_test_split
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2, random_state = 0)
-        
-        # Feature Scaling
+
         from sklearn.preprocessing import StandardScaler
         sc = StandardScaler()
         X_train = sc.fit_transform(X_train)
         X_test = sc.transform(X_test)
-        
+        if(len(pstr[0])!=0):
+            pstr = sc.transform(pstr)
+        print(X,pstr)
         # Part 2 - Building the ANN
         
         # Initializing the ANN
@@ -2232,37 +2423,8 @@ class deepLearning:
         # Training the ANN on the Training set
         hist = ann.fit(X_train, y_train, validation_split=0.33,batch_size = 32, epochs = 100)
         
-        # Part 4 - Making the predictions and evaluating the model
-        
-        # Predicting the result of a single observation
-        
-        """
-        Use our ANN model to predict if the customer with the following informations will leave the bank: 
-        Geography: France
-        Credit Score: 600
-        Gender: Male
-        Age: 40 years old
-        Tenure: 3 years
-        Balance: $ 60000
-        Number of Products: 2
-        Does this customer have a credit card? Yes
-        Is this customer an Active Member: Yes
-        Estimated Salary: $ 50000
-        So, should we say goodbye to that customer?
-        
-        Solution:
-        """
-        
-        print(ann.predict(sc.transform([[1, 0, 0, 600, 1, 40, 3, 60000, 2, 1, 1, 50000]])) > 0.5)
-        
-        """
-        Therefore, our ANN model predicts that this customer stays in the bank!
-        Important note 1: Notice that the values of the features were all input in a double pair of square brackets. That's because the "predict" method always expects a 2D array as the format of its inputs. And putting our values into a double pair of square brackets makes the input exactly a 2D array.
-        Important note 2: Notice also that the "France" country was not input as a string in the last column but as "1, 0, 0" in the first three columns. That's because of course the predict method expects the one-hot-encoded values of the state, and as we see in the first row of the matrix of features X, "France" was encoded as "1, 0, 0". And be careful to include these values in the first three columns, because the dummy variables are always created in the first columns.
-        """
-        
-        # Predicting the Test set results
         y_pred = ann.predict(X_test)
+        
         y_pred = (y_pred > 0.5)
         print(np.concatenate((y_pred.reshape(len(y_pred),1), y_test.reshape(len(y_test),1)),1))
         
@@ -2271,46 +2433,74 @@ class deepLearning:
         cm = confusion_matrix(y_test, y_pred)
         print(cm)
         acc=accuracy_score(y_test, y_pred)
-        return [acc,cm,hist]
+        if(len(pstr[0])!=0):
+            pstr = ann.predict(pstr)
+        print(pstr)
+        return [acc,cm,hist,pstr]
 
-    def artificialNeuralNetwork2(self,dir):
+    def artificialNeuralNetwork2(self,dir,pstr):
         import numpy as np
         import pandas as pd
         import tensorflow as tf
         tf.__version__
         
-        # Part 1 - Data Preprocessing
-        
-        # Importing the dataset
+
         dataset = pd.read_csv(dir)
-        X = dataset.iloc[:, 3:-1].values
-        y = dataset.iloc[:, -1].values
-        print(X)
-        print(y)
+        if(len(pstr[0])!=0):   
+            #pstr[0].append(0)
+            print(dataset,pstr)
+            dataset.loc[len(dataset)] = pstr[0]
+
+        X = dataset.iloc[:,:-1].values
         
-        # Encoding categorical data
-        # Label Encoding the "Gender" column
+        print("first")
+        print(X)
+        print(pstr)
+        
+        print("second")
+        print(X)
+        
+        print(pstr)
+        X = X[:, 3:-1]
+        if(len(pstr[0])!=0):
+            y = dataset.iloc[:-1, -1].values
+        else:
+            y = dataset.iloc[:,-1].values
+        
+
+        print("third")
+        print(X)
+      
+        print(pstr)
+
         from sklearn.preprocessing import LabelEncoder
         le = LabelEncoder()
         X[:, 2] = le.fit_transform(X[:, 2])
-        print(X)
-        # One Hot Encoding the "Geography" column
+
         from sklearn.compose import ColumnTransformer
         from sklearn.preprocessing import OneHotEncoder
         ct = ColumnTransformer(transformers=[('encoder', OneHotEncoder(), [1])], remainder='passthrough')
         X = np.array(ct.fit_transform(X))
+
+        print(X,pstr)
+        if(len(pstr[0])!=0):
+            pstr = np.array([X[-1]])
+            X = X[0:-1]
+        print("fourth")
         print(X)
-        print(len(X[0]))
-        # Splitting the dataset into the Training set and Test set
+      
+        print(pstr)
+
         from sklearn.model_selection import train_test_split
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2, random_state = 0)
-        
-        # Feature Scaling
+
         from sklearn.preprocessing import StandardScaler
         sc = StandardScaler()
         X_train = sc.fit_transform(X_train)
         X_test = sc.transform(X_test)
-        
+        if(len(pstr[0])!=0):
+            pstr = sc.transform(pstr)
+        print(X,pstr)
         # Part 2 - Building the ANN
         
         # Initializing the ANN
@@ -2318,11 +2508,9 @@ class deepLearning:
         
         # Adding the input layer and the first hidden layer
         ann.add(tf.keras.layers.Dense(units=6, activation='relu'))
-        
-        # Adding the second hidden layer
-        ann.add(tf.keras.layers.Dense(units=6, activation='relu'))
-        ann.add(tf.keras.layers.Dense(units=6, activation='relu'))
-        ann.add(tf.keras.layers.Dense(units=6, activation='relu'))
+        ann.add(tf.keras.layers.Dense(units=24, activation='relu'))
+        ann.add(tf.keras.layers.Dense(units=48, activation='relu'))
+        ann.add(tf.keras.layers.Dense(units=98, activation='relu'))
         # Adding the output layer
         ann.add(tf.keras.layers.Dense(units=1, activation='sigmoid'))
         
@@ -2334,37 +2522,8 @@ class deepLearning:
         # Training the ANN on the Training set
         hist = ann.fit(X_train, y_train, validation_split=0.33,batch_size = 32, epochs = 100)
         
-        # Part 4 - Making the predictions and evaluating the model
-        
-        # Predicting the result of a single observation
-        
-        """
-        Use our ANN model to predict if the customer with the following informations will leave the bank: 
-        Geography: France
-        Credit Score: 600
-        Gender: Male
-        Age: 40 years old
-        Tenure: 3 years
-        Balance: $ 60000
-        Number of Products: 2
-        Does this customer have a credit card? Yes
-        Is this customer an Active Member: Yes
-        Estimated Salary: $ 50000
-        So, should we say goodbye to that customer?
-        
-        Solution:
-        """
-        
-        print(ann.predict(sc.transform([[1, 0, 0, 600, 1, 40, 3, 60000, 2, 1, 1, 50000]])) > 0.5)
-        
-        """
-        Therefore, our ANN model predicts that this customer stays in the bank!
-        Important note 1: Notice that the values of the features were all input in a double pair of square brackets. That's because the "predict" method always expects a 2D array as the format of its inputs. And putting our values into a double pair of square brackets makes the input exactly a 2D array.
-        Important note 2: Notice also that the "France" country was not input as a string in the last column but as "1, 0, 0" in the first three columns. That's because of course the predict method expects the one-hot-encoded values of the state, and as we see in the first row of the matrix of features X, "France" was encoded as "1, 0, 0". And be careful to include these values in the first three columns, because the dummy variables are always created in the first columns.
-        """
-        
-        # Predicting the Test set results
         y_pred = ann.predict(X_test)
+        
         y_pred = (y_pred > 0.5)
         print(np.concatenate((y_pred.reshape(len(y_pred),1), y_test.reshape(len(y_test),1)),1))
         
@@ -2372,47 +2531,73 @@ class deepLearning:
         from sklearn.metrics import confusion_matrix, accuracy_score
         cm = confusion_matrix(y_test, y_pred)
         print(cm)
-        acc = accuracy_score(y_test, y_pred)
-        return [acc,cm,hist]
+        acc=accuracy_score(y_test, y_pred)
+        if(len(pstr[0])!=0):
+            pstr = ann.predict(pstr)
+        print(pstr)
+        return [acc,cm,hist,pstr]
 
-    def artificialNeuralNetwork3(self,dir):
+    def artificialNeuralNetwork3(self,dir,pstr):
         import numpy as np
         import pandas as pd
         import tensorflow as tf
         tf.__version__
         
-        # Part 1 - Data Preprocessing
-        
-        # Importing the dataset
+
         dataset = pd.read_csv(dir)
-        X = dataset.iloc[:, 3:-1].values
-        y = dataset.iloc[:, -1].values
-        print(X)
-        print(y)
+        if(len(pstr[0])!=0):   
+            #pstr[0].append(0)
+            dataset.loc[len(dataset)] = pstr[0]
+        X = dataset.iloc[:,:-1].values
         
-        # Encoding categorical data
-        # Label Encoding the "Gender" column
+        print("first")
+        print(X)
+        print(pstr)
+        
+        print("second")
+        print(X)
+        
+        print(pstr)
+        X = X[:, 3:-1]
+
+        if(len(pstr[0])!=0):
+            y = dataset.iloc[:-1, -1].values
+        else:
+            y = dataset.iloc[:,-1].values
+
+        print("third")
+        print(X)
+      
+        print(pstr)
+
         from sklearn.preprocessing import LabelEncoder
         le = LabelEncoder()
         X[:, 2] = le.fit_transform(X[:, 2])
-        print(X)
-        # One Hot Encoding the "Geography" column
+
         from sklearn.compose import ColumnTransformer
         from sklearn.preprocessing import OneHotEncoder
         ct = ColumnTransformer(transformers=[('encoder', OneHotEncoder(), [1])], remainder='passthrough')
         X = np.array(ct.fit_transform(X))
+
+        print(X,pstr)
+        if(len(pstr[0])!=0):
+            pstr = np.array([X[-1]])
+            X = X[0:-1]
+        print("fourth")
         print(X)
-        print(len(X[0]))
-        # Splitting the dataset into the Training set and Test set
+      
+        print(pstr)
+
         from sklearn.model_selection import train_test_split
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2, random_state = 0)
-        
-        # Feature Scaling
+
         from sklearn.preprocessing import StandardScaler
         sc = StandardScaler()
         X_train = sc.fit_transform(X_train)
         X_test = sc.transform(X_test)
-        
+        if(len(pstr[0])!=0):
+            pstr = sc.transform(pstr)
+        print(X,pstr)
         # Part 2 - Building the ANN
         
         # Initializing the ANN
@@ -2420,16 +2605,15 @@ class deepLearning:
         
         # Adding the input layer and the first hidden layer
         ann.add(tf.keras.layers.Dense(units=6, activation='relu'))
+        ann.add(tf.keras.layers.Dense(units=24, activation='relu'))
+        ann.add(tf.keras.layers.Dense(units=48, activation='relu'))
+        ann.add(tf.keras.layers.Dense(units=98, activation='relu'))
+        ann.add(tf.keras.layers.Dense(units=196, activation='relu'))
+        ann.add(tf.keras.layers.Dense(units=392, activation='relu'))
+        ann.add(tf.keras.layers.Dense(units=784, activation='relu'))
+        ann.add(tf.keras.layers.Dense(units=1568, activation='relu'))
+        ann.add(tf.keras.layers.Dense(units=3136, activation='relu'))
         
-        # Adding the second hidden layer
-        ann.add(tf.keras.layers.Dense(units=6, activation='relu'))
-        ann.add(tf.keras.layers.Dense(units=6, activation='relu'))
-        ann.add(tf.keras.layers.Dense(units=6, activation='relu'))
-        ann.add(tf.keras.layers.Dense(units=6, activation='relu'))
-        ann.add(tf.keras.layers.Dense(units=6, activation='relu'))
-        ann.add(tf.keras.layers.Dense(units=6, activation='relu'))
-        ann.add(tf.keras.layers.Dense(units=6, activation='relu'))
-        ann.add(tf.keras.layers.Dense(units=6, activation='relu'))
         # Adding the output layer
         ann.add(tf.keras.layers.Dense(units=1, activation='sigmoid'))
         
@@ -2441,37 +2625,8 @@ class deepLearning:
         # Training the ANN on the Training set
         hist = ann.fit(X_train, y_train, validation_split=0.33,batch_size = 32, epochs = 100)
         
-        # Part 4 - Making the predictions and evaluating the model
-        
-        # Predicting the result of a single observation
-        
-        """
-        Use our ANN model to predict if the customer with the following informations will leave the bank: 
-        Geography: France
-        Credit Score: 600
-        Gender: Male
-        Age: 40 years old
-        Tenure: 3 years
-        Balance: $ 60000
-        Number of Products: 2
-        Does this customer have a credit card? Yes
-        Is this customer an Active Member: Yes
-        Estimated Salary: $ 50000
-        So, should we say goodbye to that customer?
-        
-        Solution:
-        """
-        
-        print(ann.predict(sc.transform([[1, 0, 0, 600, 1, 40, 3, 60000, 2, 1, 1, 50000]])) > 0.5)
-        
-        """
-        Therefore, our ANN model predicts that this customer stays in the bank!
-        Important note 1: Notice that the values of the features were all input in a double pair of square brackets. That's because the "predict" method always expects a 2D array as the format of its inputs. And putting our values into a double pair of square brackets makes the input exactly a 2D array.
-        Important note 2: Notice also that the "France" country was not input as a string in the last column but as "1, 0, 0" in the first three columns. That's because of course the predict method expects the one-hot-encoded values of the state, and as we see in the first row of the matrix of features X, "France" was encoded as "1, 0, 0". And be careful to include these values in the first three columns, because the dummy variables are always created in the first columns.
-        """
-        
-        # Predicting the Test set results
         y_pred = ann.predict(X_test)
+        
         y_pred = (y_pred > 0.5)
         print(np.concatenate((y_pred.reshape(len(y_pred),1), y_test.reshape(len(y_test),1)),1))
         
@@ -2479,9 +2634,11 @@ class deepLearning:
         from sklearn.metrics import confusion_matrix, accuracy_score
         cm = confusion_matrix(y_test, y_pred)
         print(cm)
-        acc = accuracy_score(y_test, y_pred)
-        return [acc,cm,hist]
-
+        acc=accuracy_score(y_test, y_pred)
+        if(len(pstr[0])!=0):
+            pstr = ann.predict(pstr)
+        print(pstr)
+        return [acc,cm,hist,pstr]
 
 
     def convolutionalNeuralNetwork(self,dir):
@@ -2545,19 +2702,21 @@ class deepLearning:
         hist = cnn.fit(x = training_set, validation_data = test_set, epochs = 25)
         
         # Part 4 - Making a single prediction
+        if(len(pstr[0][0])!=0):
         
-        import numpy as np
-        from keras.preprocessing import image
-        test_image = image.load_img(dir+'/single_prediction/cat_or_dog_1.jpg', target_size = (64, 64))
-        test_image = image.img_to_array(test_image)
-        test_image = np.expand_dims(test_image, axis = 0)
-        result = cnn.predict(test_image)
-        training_set.class_indices
-        if result[0][0] == 1:
-            prediction = 'dog'
+            import numpy as np
+            from keras.preprocessing import image
+            test_image = image.load_img(pstr[0][0], target_size = (64, 64))
+            test_image = image.img_to_array(test_image)
+            test_image = np.expand_dims(test_image, axis = 0)
+            result = cnn.predict(test_image)
+            training_set.class_indices
+            if result[0][0] == 1:
+                prediction = '1st Class'
+            else:
+                prediction = '2nd Class'
         else:
-            prediction = 'cat'
-            
+            prediction = -999
         print(prediction)
 
-        return [hist.history['accuracy'][-1],hist]
+        return [hist.history['accuracy'][-1],hist,prediction]

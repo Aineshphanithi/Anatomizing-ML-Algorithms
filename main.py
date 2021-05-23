@@ -205,14 +205,20 @@ class datasetUI(QDialog, QThread):
 
         self.pstr = self.predicttext.toPlainText()
         print("User Input: ", self.pstr)
+        flag = False
         if(',' in self.pstr):    
             self.pstr = self.pstr.split(",")
+        else:
+            flag = True
         temppstr=[]
         for x in self.pstr:
             if(x.isalpha()==False):
                 print(x.isalnum(),x)
                 temppstr.append(float(x))
             else:
+                if(flag == True):
+                    temppstr.append(self.pstr)
+                    break
                 temppstr.append(x)
         
         self.pstr = [temppstr]
@@ -312,7 +318,6 @@ class datasetUI(QDialog, QThread):
             count += 100/9
             print("Progress Bar is updating")
             self.progressBar.setValue(count)
-           
 
         elif(currModel == 2):
             
@@ -326,83 +331,81 @@ class datasetUI(QDialog, QThread):
             self.progressBar.setValue(count)
         
         elif(currModel == 3):
-            
-            modules.append(ML.apriori(self.path))
+            print(self.pstr)
+            modules.append(ML.apriori(self.path,self.pstr))
             count += 100/2
             print("Progress Bar is updating")
             self.progressBar.setValue(count)
-            modules.append(ML.eclat(self.path))
+            modules.append(ML.eclat(self.path,self.pstr))
             count += 100/2
             print("Progress Bar is updating")
             self.progressBar.setValue(count)
 
         elif(currModel == 4):
 
-            modules.append(ML.upperConfidenceBound(self.path))
+            modules.append(ML.upperConfidenceBound(self.path,self.pstr))
             count += 100/2
             print("Progress Bar is updating")
             self.progressBar.setValue(count)
 
-            modules.append(ML.thompsonSampling(self.path))
+            modules.append(ML.thompsonSampling(self.path,self.pstr))
             count += 100/2
             print("Progress Bar is updating")
             self.progressBar.setValue(count)
-
         
         elif(currModel == 5):
-
-            modules.append(ML.bagOfWordsNB(self.path))
+            print(self.pstr)
+            modules.append(ML.bagOfWordsNB(self.path,self.pstr))
             count += 100/8
             print("Progress Bar is updating")
             self.progressBar.setValue(count)
 
-            modules.append(ML.bagOfWordsLR(self.path))
+            modules.append(ML.bagOfWordsLR(self.path,self.pstr))
             count += 100/8
             print("Progress Bar is updating")
             self.progressBar.setValue(count)
 
-            modules.append(ML.bagOfWordsKNN(self.path))
+            modules.append(ML.bagOfWordsKNN(self.path,self.pstr))
             count += 100/8
             print("Progress Bar is updating")
             self.progressBar.setValue(count)
 
-            modules.append(ML.bagOfWordsSVM(self.path))
+            modules.append(ML.bagOfWordsSVM(self.path,self.pstr))
             count += 100/8
             print("Progress Bar is updating")
             self.progressBar.setValue(count)
 
-            modules.append(ML.bagOfWordsKSVM(self.path))
+            modules.append(ML.bagOfWordsKSVM(self.path,self.pstr))
             count += 100/8
             print("Progress Bar is updating")
             self.progressBar.setValue(count)
 
-            modules.append(ML.bagOfWordsDTC(self.path))
+            modules.append(ML.bagOfWordsDTC(self.path,self.pstr))
             count += 100/8
             print("Progress Bar is updating")
             self.progressBar.setValue(count)
 
-            modules.append(ML.bagOfWordsRFC(self.path))
+            modules.append(ML.bagOfWordsRFC(self.path,self.pstr))
             count += 100/8
             print("Progress Bar is updating")
             self.progressBar.setValue(count)
 
-            modules.append(ML.bagOfWordsXGB(self.path))
+            modules.append(ML.bagOfWordsXGB(self.path,self.pstr))
             count += 100/8
             print("Progress Bar is updating")
             self.progressBar.setValue(count)
-
 
         elif(currModel == 6):
 
-            modules.append(ML.artificialNeuralNetwork(self.path))
+            modules.append(ML.artificialNeuralNetwork(self.path,self.pstr))
             count += 100/3
             print("Progress Bar is updating")
             self.progressBar.setValue(count)
-            modules.append(ML.artificialNeuralNetwork2(self.path))
+            modules.append(ML.artificialNeuralNetwork2(self.path,self.pstr))
             count += 100/3
             print("Progress Bar is updating")
             self.progressBar.setValue(count)
-            modules.append(ML.artificialNeuralNetwork3(self.path))
+            modules.append(ML.artificialNeuralNetwork3(self.path,self.pstr))
             count += 100/3
             print("Progress Bar is updating")
             self.progressBar.setValue(count)
@@ -439,7 +442,7 @@ class datasetUI(QDialog, QThread):
                 scores.append(score[0])
                 scoresstr = [str(x) for x in scores]
                 if(score[1][0]!=-999):
-                    self.stri+="\n RMSE: "+" ".join(scoresstr)+"\nPrediction Results : "+str(score[1][0])
+                    self.stri+="\n acc: "+str(score[0])+"\nPrediction Results : "+str(score[1][0])
                 else:
                     self.stri+="\n RMSE: "+" ".join(scoresstr)
                 self.scores.setText(self.stri)
@@ -459,10 +462,14 @@ class datasetUI(QDialog, QThread):
             elif(currModel == 3):
                 score = func
                 print(score)
-                scores.append(score)
+                scores.append(score[0])
                 scorestr = [str(x) for x in scores]
+                if(score[2]!=-999):
+                    self.stri+="\nPrediction Results : \n"+str(score[1]) + "\n" + score[2]
+                else:
+                    self.stri+=""
                 self.scores.setText(self.stri+"\n"+'\n'.join(scorestr))
-            
+                
             elif(currModel == 4):
                 score = func
                 print(score)
@@ -472,9 +479,13 @@ class datasetUI(QDialog, QThread):
 
             elif(currModel == 5):
                 score = func
-                print(score)
-                scores.append(score)
+                print("This is the score :",score)
+                scores.append(score[0])
                 scoresstr = [str(x) for x in scores]
+                if(score[1][0]!=-999):
+                    self.stri+="\nPrediction Results : \n"+str(score[1][0])
+                else:
+                    self.stri+=""
                 self.scores.setText(self.stri+"\n"+" ".join(scoresstr))
 
             elif(currModel == 6):
@@ -482,6 +493,10 @@ class datasetUI(QDialog, QThread):
                 print(score)
                 scores.append(score[0])
                 scoresstr = [str(x) for x in scores]
+                if(score[2]!=-999):
+                    self.stri+="\nPrediction Results : \n"+str(score[3]) 
+                else:
+                    self.stri+=""
                 self.scores.setText(self.stri+"\n"+"\n ".join(scoresstr))
 
             elif(currModel == 7):
@@ -489,6 +504,10 @@ class datasetUI(QDialog, QThread):
                 print(score)
                 scores.append(score)
                 scoresstr = [str(x) for x in scores]
+                if(score[3]!=-999):
+                    self.stri+="\nPrediction Results : \n"+str(score[3]) 
+                else:
+                    self.stri+=""
                 self.scores.setText(self.stri+"\n"+" ".join(scoresstr))
 
         import matplotlib.pyplot as plt; plt.rcdefaults()
@@ -565,7 +584,7 @@ class datasetUI(QDialog, QThread):
             ax2.set_title('Hierarchical_clustering')
 
         elif(currModel == 3):
-            df=modules[0]
+            df=modules[0][0]
             # lhs = df['Left Hand Side'].tolist()
             # rhs = df['Right Hand Side'].tolist()
             # sup = df['Support'].tolist()
@@ -586,7 +605,7 @@ class datasetUI(QDialog, QThread):
             table.auto_set_font_size(False)
             table.set_fontsize(9)
             
-            df = modules[1]
+            df = modules[1][0]
             #ax2.axis('tight')
             ax2.axis('off')
             ax2.set_title('Eclat (Association Rule Learning)')
@@ -705,7 +724,6 @@ class datasetUI(QDialog, QThread):
                     wspace=0.4, 
                     hspace=0.4)
 
-            
         elif(currModel == 7):
             print("CNN")
             hist = modules[0][1]
