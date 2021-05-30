@@ -83,27 +83,7 @@ class regression:
         import matplotlib.pyplot as plt
         import pandas as pd
         
-    # def simpleLinearRegression(self,dir):
-    #
-    #     # Importing the dataset
-    #     dataset = pd.read_csv(dir)
-    #     X = dataset.iloc[:, :-1].values
-    #     y = dataset.iloc[:, -1].values
-    #
-    #     # Splitting the dataset into the Training set and Test set
-    #     from sklearn.model_selection import train_test_split
-    #     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 1/3, random_state = 0)
-    #
-    #     # Training the Simple Linear Regression model on the Training set
-    #     from sklearn.linear_model import LinearRegression
-    #     regressor = LinearRegression()
-    #     regressor.fit(X_train, y_train)
-    #
-    #     # Predicting the Test set results
-    #     y_pred = regressor.predict(X_test)
-    
-
-    def multipleLinearRegression(self,dir,pstr):
+    def multipleLinearRegression(self,dir,pstr,select):
         import numpy as np
         import matplotlib.pyplot as plt
         import pandas as pd
@@ -172,7 +152,7 @@ class regression:
         
         return [str(np.concatenate((y_pred.reshape(len(y_pred),1), y_test.reshape(len(y_test),1)),1)),rmse,cstpred]
 
-    def polynomialRegression(self,dir,pstr):
+    def polynomialRegression(self,dir,pstr,select):
         import numpy as np
         import matplotlib.pyplot as plt
         import pandas as pd
@@ -252,9 +232,8 @@ class regression:
         rmse = cmath.sqrt(mse)
         print("polynomial Regression")
         return [str(np.concatenate((y_pred.reshape(len(y_pred),1), y_test.reshape(len(y_test),1)),1)),rmse,cstpred]
-
         
-    def supportVectorRegression(self,dir,pstr):
+    def supportVectorRegression(self,dir,pstr,select):
         import numpy as np
         import matplotlib.pyplot as plt
         import pandas as pd
@@ -344,8 +323,7 @@ class regression:
         print("polynomial Regression")
         return [str(np.concatenate((y_pred.reshape(len(y_pred),1), y_test.reshape(len(y_test),1)),1)),rmse,cstpred]
 
-
-    def decisionTreeRegression(self,dir,pstr):
+    def decisionTreeRegression(self,dir,pstr,select):
         import numpy as np
         import matplotlib.pyplot as plt
         import pandas as pd
@@ -422,9 +400,8 @@ class regression:
         rmse = cmath.sqrt(mse)
         #print("polynomial Regression")
         return [str(np.concatenate((y_pred.reshape(len(y_pred),1), y_test.reshape(len(y_test),1)),1)),rmse,cstpred]
-
         
-    def randomForestRegression(self,dir,pstr):
+    def randomForestRegression(self,dir,pstr,select):
         import numpy as np
         import matplotlib.pyplot as plt
         import pandas as pd
@@ -502,9 +479,7 @@ class regression:
         #print("polynomial Regression")
         return [str(np.concatenate((y_pred.reshape(len(y_pred),1), y_test.reshape(len(y_test),1)),1)),rmse,cstpred]
 
-
-
-    def xgBoostR(self,dir,pstr):
+    def xgBoostR(self,dir,pstr,select):
         import numpy as np
         import matplotlib.pyplot as plt
         import pandas as pd
@@ -593,9 +568,7 @@ class regression:
         #print("polynomial Regression")
         return [str(np.concatenate((y_pred.reshape(len(y_pred),1), y_test.reshape(len(y_test),1)),1)),rmse,cstpred]
 
-
-
-    def catBoostR(self,dir,pstr):
+    def catBoostR(self,dir,pstr,select):
         import numpy as np
         import matplotlib.pyplot as plt
         import pandas as pd
@@ -672,7 +645,6 @@ class regression:
         #print("polynomial Regression")
         return [str(np.concatenate((y_pred.reshape(len(y_pred),1), y_test.reshape(len(y_test),1)),1)),rmse, cstpred]
 
-
     def graphs(self):
         #Under Construction
         print("hello")
@@ -684,10 +656,11 @@ class classification:
         import matplotlib.pyplot as plt
         import pandas as pd
         
-    def logisticRegression(self,dir,pstr):
+    def logisticRegression(self,dir,pstr,select):
         import numpy as np
         import matplotlib.pyplot as plt
         import pandas as pd
+        import pickle
         # Importing the dataset
         dataset = pd.read_csv(dir)
         X = dataset.iloc[:, :-1].values
@@ -738,8 +711,15 @@ class classification:
         # Training the Logistic Regression model on the Training set
         from sklearn.linear_model import LogisticRegression
         classifier = LogisticRegression(random_state = 0)
-        classifier.fit(X_train, y_train)
-        
+        if(select==0):    
+            classifier.fit(X_train, y_train)
+        else:
+            with open('logisticregression.pkl', 'rb') as file:
+      
+                # Call load method to deserialze
+                classifier = pickle.load(file)
+            
+                print(classifier)
         # Predicting a new result
         print(classifier.predict(sc.transform([[30,87000]])))
         
@@ -757,11 +737,11 @@ class classification:
         score = accuracy_score(y_test, y_pred)
         return [score,cstpred]
 
-
-    def kNearestNeighbors(self,dir,pstr):
+    def kNearestNeighbors(self,dir,pstr,select):
         import numpy as np
         import matplotlib.pyplot as plt
         import pandas as pd
+        import pickle
         # Importing the dataset
         dataset = pd.read_csv(dir)
         X = dataset.iloc[:, :-1].values
@@ -813,7 +793,15 @@ class classification:
         # Training the K-NN model on the Training set
         from sklearn.neighbors import KNeighborsClassifier
         classifier = KNeighborsClassifier(n_neighbors = 5, metric = 'minkowski', p = 2)
-        classifier.fit(X_train, y_train)
+        if(select==0):    
+            classifier.fit(X_train, y_train)
+        else:
+            with open('knn.pkl', 'rb') as file:
+      
+                # Call load method to deserialze
+                classifier = pickle.load(file)
+            
+                print(classifier)
         
         # Predicting a new result
         print(classifier.predict(sc.transform([[30,87000]])))
@@ -834,12 +822,13 @@ class classification:
         score=accuracy_score(y_test, y_pred)
         return [score,cstpred]
 
-    def supportVectorMachine(self,dir,pstr):
+    def supportVectorMachine(self,dir,pstr,select):
                 
         # Importing the dataset
         import numpy as np
         import matplotlib.pyplot as plt
         import pandas as pd
+        import pickle
         dataset = pd.read_csv(dir)
         X = dataset.iloc[:, :-1].values
         y = dataset.iloc[:, -1].values
@@ -887,7 +876,14 @@ class classification:
         # Training the SVM model on the Training set
         from sklearn.svm import SVC
         classifier = SVC(kernel = 'linear', random_state = 0)
-        classifier.fit(X_train, y_train)
+        if(select==0):    
+            classifier.fit(X_train, y_train)
+        else:
+            with open('supportvectormachine.pkl', 'rb') as file:
+      
+                # Call load method to deserialze
+                classifier = pickle.load(file)
+                print(classifier)
         
         # Predicting a new result
         print(classifier.predict(sc.transform([[30,87000]])))
@@ -906,13 +902,13 @@ class classification:
         score = accuracy_score(y_test, y_pred)
         return [score,cstpred]
 
-
-    def kernelSupportVectorMachine(self,dir,pstr):
+    def kernelSupportVectorMachine(self,dir,pstr,select):
                 
         # Importing the dataset
         import numpy as np
         import matplotlib.pyplot as plt
         import pandas as pd
+        import pickle
         dataset = pd.read_csv(dir)
         X = dataset.iloc[:, :-1].values
         y = dataset.iloc[:, -1].values
@@ -963,7 +959,15 @@ class classification:
         # Training the Kernel SVM model on the Training set
         from sklearn.svm import SVC
         classifier = SVC(kernel = 'rbf', random_state = 0)
-        classifier.fit(X_train, y_train)
+        if(select==0):    
+            classifier.fit(X_train, y_train)
+        else:
+            with open('kernelsupportvectormachine.pkl', 'rb') as file:
+      
+                # Call load method to deserialze
+                classifier = pickle.load(file)
+            
+                print(classifier)
         
         # Predicting a new result
         print(classifier.predict(sc.transform([[30,87000]])))
@@ -983,12 +987,13 @@ class classification:
         score = accuracy_score(y_test, y_pred)
         return [score,cstpred]
 
-    def naiveBayes(self,dir,pstr):
+    def naiveBayes(self,dir,pstr,select):
  
         # Importing the dataset
         import numpy as np
         import matplotlib.pyplot as plt
         import pandas as pd
+        import pickle
         dataset = pd.read_csv(dir)
         X = dataset.iloc[:, :-1].values
         y = dataset.iloc[:, -1].values
@@ -1037,7 +1042,15 @@ class classification:
         # Training the Naive Bayes model on the Training set
         from sklearn.naive_bayes import GaussianNB
         classifier = GaussianNB()
-        classifier.fit(X_train, y_train)
+        if(select==0):    
+            classifier.fit(X_train, y_train)
+        else:
+            with open('naivebayes.pkl', 'rb') as file:
+      
+                # Call load method to deserialze
+                classifier = pickle.load(file)
+            
+                print(classifier)
         
         # Predicting a new result
         print(classifier.predict(sc.transform([[30,87000]])))
@@ -1057,13 +1070,13 @@ class classification:
         score = accuracy_score(y_test, y_pred)
         return [score,cstpred]
 
-
-    def decisionTreeClassification(self,dir,pstr):
+    def decisionTreeClassification(self,dir,pstr,select):
         
         # Importing the dataset
         import numpy as np
         import matplotlib.pyplot as plt
         import pandas as pd
+        import pickle
         dataset = pd.read_csv(dir)
         X = dataset.iloc[:, :-1].values
         y = dataset.iloc[:, -1].values
@@ -1111,7 +1124,15 @@ class classification:
         # Training the Decision Tree Classification model on the Training set
         from sklearn.tree import DecisionTreeClassifier
         classifier = DecisionTreeClassifier(criterion = 'entropy', random_state = 0)
-        classifier.fit(X_train, y_train)
+        if(select==0):    
+            classifier.fit(X_train, y_train)
+        else:
+            with open('descisiontreeclassification.pkl', 'rb') as file:
+      
+                # Call load method to deserialze
+                classifier = pickle.load(file)
+            
+                print(classifier)
         
         # Predicting a new result
         print(classifier.predict(sc.transform([[30,87000]])))
@@ -1130,12 +1151,13 @@ class classification:
         score = accuracy_score(y_test, y_pred)
         return [score,cstpred]
 
-    def randomForestClassification(self,dir,pstr):
+    def randomForestClassification(self,dir,pstr,select):
                 
         # Importing the dataset
         import numpy as np
         import matplotlib.pyplot as plt
         import pandas as pd
+        import pickle
         dataset = pd.read_csv(dir)
         X = dataset.iloc[:, :-1].values
         y = dataset.iloc[:, -1].values
@@ -1184,7 +1206,15 @@ class classification:
         # Training the Random Forest Classification model on the Training set
         from sklearn.ensemble import RandomForestClassifier
         classifier = RandomForestClassifier(n_estimators = 10, criterion = 'entropy', random_state = 0)
-        classifier.fit(X_train, y_train)
+        if(select==0):    
+            classifier.fit(X_train, y_train)
+        else:
+            with open('randomforestclassification.pkl', 'rb') as file:
+      
+                # Call load method to deserialze
+                classifier = pickle.load(file)
+            
+                print(classifier)
         
         # Predicting a new result
         print(classifier.predict(sc.transform([[30,87000]])))
@@ -1204,13 +1234,13 @@ class classification:
         score = accuracy_score(y_test, y_pred)
         return [score,cstpred]
 
-
-    def xgBoostC(self,dir,pstr):
+    def xgBoostC(self,dir,pstr,select):
         
         # Importing the dataset
         import numpy as np
         import matplotlib.pyplot as plt
         import pandas as pd
+        import pickle
         dataset = pd.read_csv(dir)
         X = dataset.iloc[:, :-1].values
         y = dataset.iloc[:, -1].values
@@ -1250,7 +1280,19 @@ class classification:
         # Training XGBoost on the Training set
         from xgboost import XGBClassifier
         classifier = XGBClassifier()
-        classifier.fit(X_train, y_train)
+        if(select==0):    
+            classifier.fit(X_train, y_train)
+            # with open('xgboost.pkl', 'wb') as file:
+                
+            #     # A new file will be created
+            #     pickle.dump(classifier, file)
+        else:
+            with open('xgboost.pkl', 'rb') as file:
+      
+                # Call load method to deserialze
+                classifier = pickle.load(file)
+            
+                print(classifier)
         
         # Making the Confusion Matrix
         from sklearn.metrics import confusion_matrix, accuracy_score
@@ -1270,10 +1312,11 @@ class classification:
         print("Standard Deviation: {:.2f} %".format(accuracies.std()*100))
         return [score,cstpred]
         
-    def catBoostC(self,dir,pstr):
+    def catBoostC(self,dir,pstr,select):
         import numpy as np
         import matplotlib.pyplot as plt
         import pandas as pd
+        import pickle
         dataset = pd.read_csv(dir)
         X = dataset.iloc[:, :-1].values
         y = dataset.iloc[:, -1].values
@@ -1314,7 +1357,19 @@ class classification:
         from catboost import CatBoostClassifier
         
         classifier = CatBoostClassifier()
-        classifier.fit(X_train, y_train)
+        if(select==0):    
+            classifier.fit(X_train, y_train)
+            # with open('catboost.pkl', 'wb') as file:
+                
+            #     # A new file will be created
+            #     pickle.dump(classifier, file)
+        else:
+            with open('catboost.pkl', 'rb') as file:
+      
+                # Call load method to deserialze
+                classifier = pickle.load(file)
+            
+                print(classifier)
         # Making the Confusion Matrix
         from sklearn.metrics import confusion_matrix, accuracy_score
         
@@ -1330,12 +1385,11 @@ class classification:
         # Applying k-Fold Cross Validation
         from sklearn.model_selection import cross_val_score
         
-        accuracies = cross_val_score(estimator=classifier, X=X_train, y=y_train, cv=10)
-        print("Accuracy: {:.2f} %".format(accuracies.mean() * 100))
-        print("Standard Deviation: {:.2f} %".format(accuracies.std() * 100))
+        # accuracies = cross_val_score(estimator=classifier, X=X_train, y=y_train, cv=10)
+        # print("Accuracy: {:.2f} %".format(accuracies.mean() * 100))
+        # print("Standard Deviation: {:.2f} %".format(accuracies.std() * 100))
         return [score,cstpred]
 
-        
 class clustering:
     
     def __init__(self):
@@ -1344,7 +1398,7 @@ class clustering:
         import matplotlib.pyplot as plt
         import pandas as pd
         
-    def k_MeansClustering(self,dir,pstr):
+    def k_MeansClustering(self,dir,pstr,select):
         # Importing the dataset
         import numpy as np
         import matplotlib.pyplot as plt
@@ -1438,7 +1492,7 @@ class clustering:
 
         return [v_scores,cstpred,y_kmeans,X,kmeans,wcss]
 
-    def hierarchicalClustering(self,dir,pstr):
+    def hierarchicalClustering(self,dir,pstr,select):
         
         # Importing the dataset
         import numpy as np
@@ -1511,7 +1565,7 @@ class clustering:
         else:
             cstpred = [-999]
         return [v_scores,cstpred,X,y_hc]
-        
+
 class associationRuleLearning:
     def __init__(self):
         
@@ -1519,10 +1573,11 @@ class associationRuleLearning:
         import matplotlib.pyplot as plt
         import pandas as pd
         
-    def apriori(self,dir,pstr):
+    def apriori(self,dir,pstr,select):
         import numpy as np
         import matplotlib.pyplot as plt
         import pandas as pd
+        import pickle
         # Data Preprocessing
         dataset = pd.read_csv(dir, header = None)
         transactions = []
@@ -1531,8 +1586,15 @@ class associationRuleLearning:
         
         # Training the Apriori model on the dataset
         from apyori import apriori
-        rules = apriori(transactions = transactions, min_support = 0.003, min_confidence = 0.2, min_lift = 3, min_length = 2, max_length = 2)
-        
+        if(select==0):
+            rules = apriori(transactions = transactions, min_support = 0.003, min_confidence = 0.2, min_lift = 3, min_length = 2, max_length = 2)
+        else:
+            with open('apriori.pkl', 'rb') as file:
+      
+                # Call load method to deserialze
+                rules = pickle.load(file)
+  
+            print(rules)
         # Visualising the results
         
         ## Displaying the first results coming directly from the output of the apriori function
@@ -1566,7 +1628,7 @@ class associationRuleLearning:
 
         return [result,prdres1,prdres2]
 
-    def eclat(self,dir,pstr):
+    def eclat(self,dir,pstr,select):
         import numpy as np
         import matplotlib.pyplot as plt
         import pandas as pd
@@ -1608,7 +1670,7 @@ class associationRuleLearning:
             prdres2 = "Support : \n"+str(resultsinDataFrame['Support'].where(resultsinDataFrame['Product 1'] == pstr[0][0]))
 
         return [result,prdres1,prdres2]
-        
+
 class reinforcementLearning:
     def __init__(self):
         
@@ -1616,7 +1678,7 @@ class reinforcementLearning:
         import matplotlib.pyplot as plt
         import pandas as pd
         
-    def upperConfidenceBound(self,dir):
+    def upperConfidenceBound(self,dir,pstr,select):
         import numpy as np
         import matplotlib.pyplot as plt
         import pandas as pd
@@ -1681,7 +1743,7 @@ class reinforcementLearning:
         print(ads_selected)
         return ads_selected
         
-    def thompsonSampling(self,dir):
+    def thompsonSampling(self,dir,pstr,select):
         import numpy as np
         import matplotlib.pyplot as plt
         import pandas as pd
@@ -1743,7 +1805,7 @@ class reinforcementLearning:
         #plt.show()
         print(ads_selected)
         return ads_selected
-        
+
 class naturalLanguageProcessing:
     def __init__(self):
         
@@ -1751,7 +1813,7 @@ class naturalLanguageProcessing:
         import matplotlib.pyplot as plt
         import pandas as pd
     
-    def bagOfWordsNB(self,dir,pstr):
+    def bagOfWordsNB(self,dir,pstr,select):
         import numpy as np
         import matplotlib.pyplot as plt
         import pandas as pd
@@ -1788,7 +1850,7 @@ class naturalLanguageProcessing:
             review = ' '.join(review)
             prediction.append(review)
             #print(corpus,prediction)
-        corpus.extend(prediction)
+            corpus.extend(prediction)
         print(corpus)
         # Creating the Bag of Words model
         from sklearn.feature_extraction.text import CountVectorizer
@@ -1826,9 +1888,8 @@ class naturalLanguageProcessing:
         cm = confusion_matrix(y_test, y_pred)
         print(cm)
         return [accuracy_score(y_test, y_pred),pstr]
-        
-        
-    def bagOfWordsLR(self,dir,pstr):
+          
+    def bagOfWordsLR(self,dir,pstr,select):
         import numpy as np
         import matplotlib.pyplot as plt
         import pandas as pd  
@@ -1865,7 +1926,7 @@ class naturalLanguageProcessing:
             review = ' '.join(review)
             prediction.append(review)
             print(corpus,prediction)
-        corpus.extend(prediction)
+            corpus.extend(prediction)
         # Creating the Bag of Words model
         from sklearn.feature_extraction.text import CountVectorizer
         cv = CountVectorizer(max_features = 1500)
@@ -1897,7 +1958,7 @@ class naturalLanguageProcessing:
         print(cm)
         return [accuracy_score(y_test, y_pred),pstr]
     
-    def bagOfWordsKNN(self,dir,pstr):
+    def bagOfWordsKNN(self,dir,pstr,select):
         import numpy as np
         import matplotlib.pyplot as plt
         import pandas as pd     
@@ -1934,8 +1995,8 @@ class naturalLanguageProcessing:
             review = ' '.join(review)
             prediction.append(review)
             print(corpus,prediction)
-        # Creating the Bag of Words model
-        corpus.extend(prediction)
+            # Creating the Bag of Words model
+            corpus.extend(prediction)
         from sklearn.feature_extraction.text import CountVectorizer
         cv = CountVectorizer(max_features = 1500)
         X = cv.fit_transform(corpus).toarray()
@@ -1969,13 +2030,13 @@ class naturalLanguageProcessing:
         print(cm)
         return [accuracy_score(y_test, y_pred),pstr]
         
-    def bagOfWordsSVM(self,dir,pstr):
+    def bagOfWordsSVM(self,dir,pstr,select):
         import numpy as np
         import matplotlib.pyplot as plt
         import pandas as pd        
         # Importing the dataset
         dataset = pd.read_csv(dir, delimiter = '\t', quoting = 3)
-        
+
         # Cleaning the texts
         import re
         import nltk
@@ -2006,7 +2067,7 @@ class naturalLanguageProcessing:
             review = ' '.join(review)
             prediction.append(review)
             print(corpus,prediction)
-        corpus.extend(prediction)
+            corpus.extend(prediction)
         # Creating the Bag of Words model
         from sklearn.feature_extraction.text import CountVectorizer
         cv = CountVectorizer(max_features = 1500)
@@ -2042,7 +2103,7 @@ class naturalLanguageProcessing:
         print(cm)
         return [accuracy_score(y_test, y_pred),pstr]
         
-    def bagOfWordsKSVM(self,dir,pstr):
+    def bagOfWordsKSVM(self,dir,pstr,select):
         import numpy as np
         import matplotlib.pyplot as plt
         import pandas as pd        
@@ -2079,7 +2140,7 @@ class naturalLanguageProcessing:
             review = ' '.join(review)
             prediction.append(review)
             print(corpus,prediction)
-        corpus.extend(prediction)
+            corpus.extend(prediction)
         # Creating the Bag of Words model
 
         from sklearn.feature_extraction.text import CountVectorizer
@@ -2117,7 +2178,7 @@ class naturalLanguageProcessing:
         print(cm)
         return [accuracy_score(y_test, y_pred),pstr]
 
-    def bagOfWordsDTC(self,dir,pstr):
+    def bagOfWordsDTC(self,dir,pstr,select):
         import numpy as np
         import matplotlib.pyplot as plt
         import pandas as pd        
@@ -2154,7 +2215,7 @@ class naturalLanguageProcessing:
             review = ' '.join(review)
             prediction.append(review)
             print(corpus,prediction)
-        corpus.extend(prediction)
+            corpus.extend(prediction)
         # Creating the Bag of Words model
         from sklearn.feature_extraction.text import CountVectorizer
         cv = CountVectorizer(max_features = 1500)
@@ -2192,7 +2253,7 @@ class naturalLanguageProcessing:
         print(cm)
         return [accuracy_score(y_test, y_pred),pstr]
         
-    def bagOfWordsRFC(self,dir,pstr):
+    def bagOfWordsRFC(self,dir,pstr,select):
         import numpy as np
         import matplotlib.pyplot as plt
         import pandas as pd        
@@ -2229,7 +2290,7 @@ class naturalLanguageProcessing:
             review = ' '.join(review)
             prediction.append(review)
             print(corpus,prediction)
-        corpus.extend(prediction)
+            corpus.extend(prediction)
         # Creating the Bag of Words model
         from sklearn.feature_extraction.text import CountVectorizer
         cv = CountVectorizer(max_features = 1500)
@@ -2264,7 +2325,7 @@ class naturalLanguageProcessing:
         print(cm)
         return [accuracy_score(y_test, y_pred),pstr]
         
-    def bagOfWordsXGB(self,dir,pstr):
+    def bagOfWordsXGB(self,dir,pstr,select):
         import numpy as np
         import matplotlib.pyplot as plt
         import pandas as pd        
@@ -2301,7 +2362,7 @@ class naturalLanguageProcessing:
             review = ' '.join(review)
             prediction.append(review)
             print(corpus,prediction)
-        corpus.extend(prediction)
+            corpus.extend(prediction)
         # Creating the Bag of Words model
         from sklearn.feature_extraction.text import CountVectorizer
         cv = CountVectorizer(max_features = 1500)
@@ -2336,18 +2397,20 @@ class naturalLanguageProcessing:
         cm = confusion_matrix(y_test, y_pred)
         print(cm)
         return [accuracy_score(y_test, y_pred),pstr]
-        
+
 class deepLearning:
+
     def __init__(self):
         
         import numpy as np
         import matplotlib.pyplot as plt
         import pandas as pd
     
-    def artificialNeuralNetwork(self,dir,pstr):
+    def artificialNeuralNetwork(self,dir,pstr,select):
         import numpy as np
         import pandas as pd
         import tensorflow as tf
+        import pickle
         tf.__version__
         
 
@@ -2421,8 +2484,19 @@ class deepLearning:
         ann.compile(optimizer = 'adam', loss = 'binary_crossentropy', metrics = ['accuracy'])
         
         # Training the ANN on the Training set
-        hist = ann.fit(X_train, y_train, validation_split=0.33,batch_size = 32, epochs = 100)
         
+        
+        if(select == 0):
+            hist = ann.fit(X_train, y_train, validation_split=0.33,batch_size = 32, epochs = 100)
+            ann.save_weights('./checkpoints1/my_checkpoint')
+            with open('/trainHistoryann1Dict', 'wb') as file_pi:
+               pickle.dump(hist.history, file_pi)
+        else:
+            #ann(np.zeros((1,w,h,c)))
+            ann.load_weights('./checkpoints1/my_checkpoint')
+            hist = pickle.load(open('/trainHistoryann1Dict', "rb"))
+
+
         y_pred = ann.predict(X_test)
         
         y_pred = (y_pred > 0.5)
@@ -2438,10 +2512,11 @@ class deepLearning:
         print(pstr)
         return [acc,cm,hist,pstr]
 
-    def artificialNeuralNetwork2(self,dir,pstr):
+    def artificialNeuralNetwork2(self,dir,pstr,select):
         import numpy as np
         import pandas as pd
         import tensorflow as tf
+        import pickle
         tf.__version__
         
 
@@ -2520,8 +2595,16 @@ class deepLearning:
         ann.compile(optimizer = 'adam', loss = 'binary_crossentropy', metrics = ['accuracy'])
         
         # Training the ANN on the Training set
-        hist = ann.fit(X_train, y_train, validation_split=0.33,batch_size = 32, epochs = 100)
-        
+        if(select == 0):
+            hist = ann.fit(X_train, y_train, validation_split=0.33,batch_size = 32, epochs = 100)
+            ann.save_weights('./checkpoints5/my_checkpoint')
+            with open('/trainHistoryann5Dict', 'wb') as file_pi:
+               pickle.dump(hist.history, file_pi)
+        else:
+            
+            ann.load_weights('./checkpoints5/my_checkpoint')
+            hist = pickle.load(open('/trainHistoryann5Dict', "rb"))
+
         y_pred = ann.predict(X_test)
         
         y_pred = (y_pred > 0.5)
@@ -2537,10 +2620,11 @@ class deepLearning:
         print(pstr)
         return [acc,cm,hist,pstr]
 
-    def artificialNeuralNetwork3(self,dir,pstr):
+    def artificialNeuralNetwork3(self,dir,pstr,select):
         import numpy as np
         import pandas as pd
         import tensorflow as tf
+        import pickle
         tf.__version__
         
 
@@ -2623,8 +2707,16 @@ class deepLearning:
         ann.compile(optimizer = 'adam', loss = 'binary_crossentropy', metrics = ['accuracy'])
         
         # Training the ANN on the Training set
-        hist = ann.fit(X_train, y_train, validation_split=0.33,batch_size = 32, epochs = 100)
-        
+        if(select == 0):
+            hist = ann.fit(X_train, y_train, validation_split=0.33,batch_size = 32, epochs = 100)
+            ann.save_weights('./checkpoints10/my_checkpoint')
+            with open('/trainHistoryann10Dict', 'wb') as file_pi:
+               pickle.dump(hist.history, file_pi)
+        else:
+            
+            ann.load_weights('./checkpoints10/my_checkpoint')
+            hist = pickle.load(open('/trainHistoryann10Dict', "rb"))
+
         y_pred = ann.predict(X_test)
         
         y_pred = (y_pred > 0.5)
@@ -2640,14 +2732,14 @@ class deepLearning:
         print(pstr)
         return [acc,cm,hist,pstr]
 
-
-    def convolutionalNeuralNetwork(self,dir):
+    def convolutionalNeuralNetwork(self,dir,pstr,select):
         import numpy as np
         import matplotlib.pyplot as plt
         import pandas as pd
         # Importing the libraries
         import tensorflow as tf
         from keras.preprocessing.image import ImageDataGenerator
+        import pickle
         tf.__version__
         
         # Part 1 - Data Preprocessing
@@ -2699,10 +2791,17 @@ class deepLearning:
         cnn.compile(optimizer = 'adam', loss = 'binary_crossentropy', metrics = ['accuracy'])
         
         # Training the CNN on the Training set and evaluating it on the Test set
-        hist = cnn.fit(x = training_set, validation_data = test_set, epochs = 25)
+        if(select == 0):
+            hist = cnn.fit(x = training_set, validation_data = test_set, epochs = 25)
+        else:
+            #cnn.save_weights(filepath='final_weight.h5')
+            cnn.load_weights('final_weight.h5')
+            #with open('/trainHistoryDict', 'wb') as file_pi:
+            #    pickle.dump(hist.history, file_pi)
+            hist = pickle.load(open('/trainHistoryDict', "rb"))
         
         # Part 4 - Making a single prediction
-        if(len(pstr[0][0])!=0):
+        if(len(pstr[0])!=0):
         
             import numpy as np
             from keras.preprocessing import image
@@ -2719,4 +2818,4 @@ class deepLearning:
             prediction = -999
         print(prediction)
 
-        return [hist.history['accuracy'][-1],hist,prediction]
+        return [hist['accuracy'][-1],hist,prediction]
