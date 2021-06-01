@@ -1409,11 +1409,13 @@ class clustering:
         dataset = pd.read_csv(dir)
         X = dataset.iloc[:,[3,4]].values
         #y = dataset.iloc[:, -1].values
-        pstr = pd.DataFrame(pstr)
-        pstr = pstr.iloc[:].values
         
-        pstr = pstr[:,[3,4]]
-        pstr=np.array(pstr)
+        if(len(pstr[0])!=0):
+            pstr = pd.DataFrame(pstr)
+            pstr = pstr.iloc[:].values
+            
+            pstr = pstr[:,[3,4]]
+            pstr=np.array(pstr)
         
         
         stridx = []
