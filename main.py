@@ -186,6 +186,30 @@ class datasetUI(QDialog, QThread):
         self.untrained.setChecked(True)
         self.trained.toggled.connect(self.onClicked1)
         self.untrained.toggled.connect(self.onClicked2)
+        
+        if(self.currModel == 0):
+            self.scores.setText("Please Select a Regression dataset(CSV format only) of n columns where first n-1 columns are X(Features) and nth Column is Y(Label). Ensure the dataset consist of at most one string column.")
+        elif(self.currModel == 1):
+            self.scores.setText("Please Select a Classification dataset(CSV format only) of n columns where first n-1 columns are X(Features) and nth Column is Y(Label). Ensure the dataset consist of at most one string column.")
+            print("Please Select the Regression dataset(CSV format only) of n columns where first n-1 columns are X(Features) and nth Column is Y(Label). Ensure the dataset consist of at most one string column")
+        elif(self.currModel == 2):
+            self.scores.setText("Please Select a Clustering dataset(CSV format only) of n columns where all columns are X(Features). Ensure the dataset consist of at most one string column.\n Prediction is not possible here.")
+            print("Please Select the Regression dataset(CSV format only) of n columns where first n-1 columns are X(Features) and nth Column is Y(Label). Ensure the dataset consist of at most one string column")      
+        elif(self.currModel == 3):
+            self.scores.setText("Please Select a Association Rule Learning dataset(CSV format only). The data should be of string format.")
+            print("Please Select the Regression dataset(CSV format only) of n columns where first n-1 columns are X(Features) and nth Column is Y(Label). Ensure the dataset consist of at most one string column")      
+        elif(self.currModel == 4):
+            self.scores.setText("Please Select a ReinforcementLearning dataset(CSV format only) of n columns where all columns are X(Features). Ensure the dataset consist of at most one string column. \n Prediction is not possible here.")
+            print("Please Select the Regression dataset(CSV format only) of n columns where first n-1 columns are X(Features) and nth Column is Y(Label). Ensure the dataset consist of at most one string column")      
+        elif(self.currModel == 5):
+            self.scores.setText("Please Select a Natural Language Process dataset(TSV format only) of n columns where first n-1 columns are X(Features) that are strings and nth Column is Y(Label).")
+            print("Please Select the Regression dataset(CSV format only) of n columns where first n-1 columns are X(Features) and nth Column is Y(Label). Ensure the dataset consist of at most one string column")       
+        elif(self.currModel == 6):
+            self.scores.setText("Please Select a ANN dataset(CSV format only) of n columns where first n-1 columns are X(Features) and nth Column is Y(Label). Ensure the dataset consist of at most one string column.")
+            print("Please Select the Regression dataset(CSV format only) of n columns where first n-1 columns are X(Features) and nth Column is Y(Label). Ensure the dataset consist of at most one string column")      
+        elif(self.currModel == 7):
+            self.scores.setText("Please Select a CNN dataset folder where there are two sub-directories test_set and trainning_set. Each Folder should contain two sub-directories where images are present. As it is binary classification model we only use two different image classes.")
+            print("Please Select the Regression dataset(CSV format only) of n columns where first n-1 columns are X(Features) and nth Column is Y(Label). Ensure the dataset consist of at most one string column")
 
     def onClicked1(self):
         self.select = 1
@@ -240,7 +264,6 @@ class datasetUI(QDialog, QThread):
     
     def getScores(self):
 
-
         self.pstr = self.predicttext.toPlainText()
         print("User Input: ", self.pstr)
         flag = False
@@ -250,7 +273,7 @@ class datasetUI(QDialog, QThread):
             flag = True
         temppstr=[]
         for x in self.pstr:
-            if(x.isalpha()==False):
+            if(x[0].isalpha()==False):
                 print(x.isalnum(),x)
                 temppstr.append(float(x))
             else:
@@ -493,9 +516,9 @@ class datasetUI(QDialog, QThread):
                     scores.append(score[0])
                     scoresstr = [str(x) for x in scores]
                     if(score[1][0]!=-999):
-                        self.stri+="\n RMSE: "+" ".join(scoresstr)+"\nPrediction Results : "+str(score[1][0])
+                        self.stri+="\nPrediction Results : "+str(score[1][0])
                     else:
-                        self.stri+="\n RMSE: "+" ".join(scoresstr)
+                        self.stri+=""#"\n RMSE: "+" ".join(scoresstr)
                     self.scores.setText(self.stri)
 
                 elif(currModel == 3):
@@ -507,7 +530,7 @@ class datasetUI(QDialog, QThread):
                         self.stri+="\nPrediction Results : \n"+str(score[1]) + "\n" + score[2]
                     else:
                         self.stri+=""
-                    self.scores.setText(self.stri+"\n"+'\n'.join(scorestr))
+                    self.scores.setText(self.stri+"\n")
                     
                 elif(currModel == 4):
                     score = func
@@ -529,25 +552,26 @@ class datasetUI(QDialog, QThread):
 
                 elif(currModel == 6):
                     score = func
-                    print(score)
+                    print("first")
                     scores.append(score[0])
                     scoresstr = [str(x) for x in scores]
-                    if(score[2]!=-999):
+                    if(score[3]!=-999):
                         self.stri+="\nPrediction Results : \n"+str(score[3]) 
                     else:
-                        self.stri+=""
+                        self.stri+="\nacc :"+str(score[0])
                     self.scores.setText(self.stri+"\n"+"\n ".join(scoresstr))
+                    print("second")
 
                 elif(currModel == 7):
                     score = func
                     print(score)
-                    scores.append(score)
-                    scoresstr = [str(x) for x in scores]
+                    #scores.append(score)
+                    #scoresstr = [str(x) for x in scores]
                     if(score[2]!=-999):
-                        self.stri+="\nPrediction Results : \n"+str(score[3]) 
+                        self.stri+="\nPrediction Results : \n"+str(score[2]) 
                     else:
                         self.stri+=""
-                    self.scores.setText(self.stri+"\n"+" ".join(scoresstr))
+                    self.scores.setText(self.stri+"\n")
 
             import matplotlib.pyplot as plt; plt.rcdefaults()
             import numpy as np

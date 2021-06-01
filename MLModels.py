@@ -1411,7 +1411,11 @@ class clustering:
         #y = dataset.iloc[:, -1].values
         pstr = pd.DataFrame(pstr)
         pstr = pstr.iloc[:].values
-        print(X,pstr)
+        
+        pstr = pstr[:,[3,4]]
+        pstr=np.array(pstr)
+        
+        
         stridx = []
         for x in range(0, len(X[0])):
             if isinstance(X[0][x], str):
@@ -1470,6 +1474,9 @@ class clustering:
         kmeans = KMeans(n_clusters = 5, init = 'k-means++', random_state = 42)
         y_pred = kmeans.fit_predict(X)
         print(X)
+        
+        print(pstr)
+        pstr = np.array(pstr)
         print(pstr)
         if(len(pstr[0])!=0):
             cstpred = kmeans.fit_predict(pstr)
@@ -1611,7 +1618,13 @@ class associationRuleLearning:
             return list(zip(lhs, rhs, supports, confidences, lifts))
         
         resultsinDataFrame = pd.DataFrame(inspect(results), columns = ['Left Hand Side', 'Right Hand Side', 'Support', 'Confidence', 'Lift'])
-        
+        if(len(pstr[0]) == 0):
+            prdres1 = -999
+            prdres2 = -999
+        else:
+            prdres1 = resultsinDataFrame['Right Hand Side'].where(resultsinDataFrame['Left Hand Side'] == pstr[0][0])
+            prdres2 = "Lift: \n"+str(resultsinDataFrame['Lift'].where(resultsinDataFrame['Left Hand Side'] == pstr[0][0]))
+
         ## Displaying the results non sorted
         print(resultsinDataFrame)
         
@@ -2509,6 +2522,8 @@ class deepLearning:
         acc=accuracy_score(y_test, y_pred)
         if(len(pstr[0])!=0):
             pstr = ann.predict(pstr)
+        else:
+            pstr = -999
         print(pstr)
         return [acc,cm,hist,pstr]
 
@@ -2617,6 +2632,8 @@ class deepLearning:
         acc=accuracy_score(y_test, y_pred)
         if(len(pstr[0])!=0):
             pstr = ann.predict(pstr)
+        else:
+            pstr = -999
         print(pstr)
         return [acc,cm,hist,pstr]
 
@@ -2729,6 +2746,8 @@ class deepLearning:
         acc=accuracy_score(y_test, y_pred)
         if(len(pstr[0])!=0):
             pstr = ann.predict(pstr)
+        else:
+            pstr = -999
         print(pstr)
         return [acc,cm,hist,pstr]
 
